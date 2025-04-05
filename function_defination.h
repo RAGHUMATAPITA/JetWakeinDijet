@@ -119,7 +119,7 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
       	    
       if(ldJet_pt < leading_pT_min_cut || sldJet_pt < subleading_pT_min_cut || fabs(ldJet_eta) > jet_eta_max_cut || fabs(sldJet_eta) > jet_eta_max_cut) {std::cout<<"Leading and subleading jets are out of pT and eta cuts, please check"<<std::endl;}
 
-      if(fabs(ldJet_eta) > 0.5) continue; // for test
+      if(fabs(ldJet_eta) > Leading_Eta_cut) continue; // very crucial cut
       
       int ldjtTRkCorr = 0, ldjtTRkCorr_RapAsym = 0, ldjtTRkCorr_RapAsym_1 = 0, ldjtTRkCorr_RapAsym_2 = 0, ldjtTRkCorr_RapAsym_3 = 0, ldjtTRkCorr_RapAsym_sh = 0, ldjtTRkCorr_RapAsym_oh = 0; // for reco jet reco trks
       int rcJet_gnTrk_sube0_ldjtTRkCorr = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_1 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_2 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_3 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_sh = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_oh = 0; // reco jet gen trks sub == 0
@@ -889,7 +889,7 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
       
       double Deta_ldsldJet = fabs(ldJet_eta - sldJet_eta);
 
-      if(fabs(ldJet_eta) > 0.5) continue; // for test
+      if(fabs(ldJet_eta) > Leading_Eta_cut) continue; // very crucial cut
       
       /*
       // mixing algorithm

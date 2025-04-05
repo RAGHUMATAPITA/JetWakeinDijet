@@ -53,6 +53,8 @@ float leading_pT_max_cut = 5020.0; // leaading jet max pt cut
 float subleading_pT_min_cut = 90.0; // subleaading jet min pt cut
 float subleading_pT_max_cut = 5020.0; // subleaading jet max pt cut
 
+float Leading_Eta_cut = 0.5;
+
 float leading_subleading_deltaphi_min = (5./6.)*TMath::Pi(); // leading subleading min Dphi cut
 //float leading_subleading_deltaphi_min = 0.5*TMath::Pi(); // leading subleading min Dphi cut
 
