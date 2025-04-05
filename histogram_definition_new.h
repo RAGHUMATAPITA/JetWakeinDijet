@@ -152,6 +152,7 @@ double xmin_pair[3]   =   { 0, 0,  0,               };
 double xmax_pair[3]   =   { 1, 8,  (double)NCentbin };
 
 // signal
+// reco/data
 // for jet pairs
 THnSparseD* hldsld_Jet_pair_Signal_RapAsym = new THnSparseD("hldsld_Jet_pair_Signal_RapAsym", "", 3, bins_pair, xmin_pair, xmax_pair);
 THnSparseD* hldsld_Jet_pair_Signal_RapAsym_1 = new THnSparseD("hldsld_Jet_pair_Signal_RapAsym_1", "", 3, bins_pair, xmin_pair, xmax_pair);
@@ -160,16 +161,49 @@ THnSparseD* hldsld_Jet_pair_Signal_RapAsym_3 = new THnSparseD("hldsld_Jet_pair_S
 THnSparseD* hldsld_Jet_pair_Signal_RapAsym_sh = new THnSparseD("hldsld_Jet_pair_Signal_RapAsym_sh", "", 3, bins_pair, xmin_pair, xmax_pair);
 THnSparseD* hldsld_Jet_pair_Signal_RapAsym_oh = new THnSparseD("hldsld_Jet_pair_Signal_RapAsym_oh", "", 3, bins_pair, xmin_pair, xmax_pair);
 THnSparseD* hldsld_Jet_pair_Signal = new THnSparseD("hldsld_Jet_pair_Signal", "", 3, bins_pair, xmin_pair, xmax_pair);
+// reco jet - gen tracks
+// for sube = 0
+THnSparseD* hldsld_Jet_pair_sube0_Signal_RapAsym = new THnSparseD("hldsld_Jet_pair_sube0_Signal_RapAsym", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Signal_RapAsym_1 = new THnSparseD("hldsld_Jet_pair_sube0_Signal_RapAsym_1", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Signal_RapAsym_2 = new THnSparseD("hldsld_Jet_pair_sube0_Signal_RapAsym_2", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Signal_RapAsym_3 = new THnSparseD("hldsld_Jet_pair_sube0_Signal_RapAsym_3", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Signal_RapAsym_sh = new THnSparseD("hldsld_Jet_pair_sube0_Signal_RapAsym_sh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Signal_RapAsym_oh = new THnSparseD("hldsld_Jet_pair_sube0_Signal_RapAsym_oh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Signal = new THnSparseD("hldsld_Jet_pair_sube0_Signal", "", 3, bins_pair, xmin_pair, xmax_pair);
+// for sube = 1
+THnSparseD* hldsld_Jet_pair_sube1_Signal_RapAsym = new THnSparseD("hldsld_Jet_pair_sube1_Signal_RapAsym", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Signal_RapAsym_1 = new THnSparseD("hldsld_Jet_pair_sube1_Signal_RapAsym_1", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Signal_RapAsym_2 = new THnSparseD("hldsld_Jet_pair_sube1_Signal_RapAsym_2", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Signal_RapAsym_3 = new THnSparseD("hldsld_Jet_pair_sube1_Signal_RapAsym_3", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Signal_RapAsym_sh = new THnSparseD("hldsld_Jet_pair_sube1_Signal_RapAsym_sh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Signal_RapAsym_oh = new THnSparseD("hldsld_Jet_pair_sube1_Signal_RapAsym_oh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Signal = new THnSparseD("hldsld_Jet_pair_sube1_Signal", "", 3, bins_pair, xmin_pair, xmax_pair);
 
-// reco/data
 //leading jet - trk
-THnSparseD* hldJet_Trk_Signal_RapAsym = new THnSparseD("hldJet_Trk_Signal_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Signal_RapAsym_1 = new THnSparseD("hldJet_Trk_Signal_RapAsym_1", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Signal_RapAsym_2 = new THnSparseD("hldJet_Trk_Signal_RapAsym_2", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Signal_RapAsym_3 = new THnSparseD("hldJet_Trk_Signal_RapAsym_3", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Signal_RapAsym_sh = new THnSparseD("hldJet_Trk_Signal_RapAsym_sh", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Signal_RapAsym_oh = new THnSparseD("hldJet_Trk_Signal_RapAsym_oh", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Signal = new THnSparseD("hldJet_Trk_Signal", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_Trk_Signal_RapAsym = new THnSparseD("hldJet_Trk_Signal_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
+// reco jet - gen tracks
+// for sube = 0
+THnSparseD* hldJet_sube0_Signal_RapAsym = new THnSparseD("hldJet_sube0_Signal_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Signal_RapAsym_1 = new THnSparseD("hldJet_sube0_Signal_RapAsym_1", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Signal_RapAsym_2 = new THnSparseD("hldJet_sube0_Signal_RapAsym_2", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Signal_RapAsym_3 = new THnSparseD("hldJet_sube0_Signal_RapAsym_3", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Signal_RapAsym_sh = new THnSparseD("hldJet_sube0_Signal_RapAsym_sh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Signal_RapAsym_oh = new THnSparseD("hldJet_sube0_Signal_RapAsym_oh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Signal = new THnSparseD("hldJet_sube0_Signal", "", 5, bins_corr, xmin_corr, xmax_corr);
+// for sube = 1
+THnSparseD* hldJet_sube1_Signal_RapAsym = new THnSparseD("hldJet_sube1_Signal_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Signal_RapAsym_1 = new THnSparseD("hldJet_sube1_Signal_RapAsym_1", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Signal_RapAsym_2 = new THnSparseD("hldJet_sube1_Signal_RapAsym_2", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Signal_RapAsym_3 = new THnSparseD("hldJet_sube1_Signal_RapAsym_3", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Signal_RapAsym_sh = new THnSparseD("hldJet_sube1_Signal_RapAsym_sh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Signal_RapAsym_oh = new THnSparseD("hldJet_sube1_Signal_RapAsym_oh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Signal = new THnSparseD("hldJet_sube1_Signal", "", 5, bins_corr, xmin_corr, xmax_corr);
 
 //subleading jet - trk
 THnSparseD* hsldJet_Trk_Signal_RapAsym = new THnSparseD("hsldJet_Trk_Signal_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
@@ -265,6 +299,23 @@ THnSparseD* hldsld_Jet_pair_Mixing_RapAsym_3 = new THnSparseD("hldsld_Jet_pair_M
 THnSparseD* hldsld_Jet_pair_Mixing_RapAsym_sh = new THnSparseD("hldsld_Jet_pair_Mixing_RapAsym_sh", "", 3, bins_pair, xmin_pair, xmax_pair);
 THnSparseD* hldsld_Jet_pair_Mixing_RapAsym_oh = new THnSparseD("hldsld_Jet_pair_Mixing_RapAsym_oh", "", 3, bins_pair, xmin_pair, xmax_pair);
 THnSparseD* hldsld_Jet_pair_Mixing = new THnSparseD("hldsld_Jet_pair_Mixing", "", 3, bins_pair, xmin_pair, xmax_pair);
+// reco jet - gen tracks
+// for sube = 0
+THnSparseD* hldsld_Jet_pair_sube0_Mixing_RapAsym = new THnSparseD("hldsld_Jet_pair_sube0_Mixing_RapAsym", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Mixing_RapAsym_1 = new THnSparseD("hldsld_Jet_pair_sube0_Mixing_RapAsym_1", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Mixing_RapAsym_2 = new THnSparseD("hldsld_Jet_pair_sube0_Mixing_RapAsym_2", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Mixing_RapAsym_3 = new THnSparseD("hldsld_Jet_pair_sube0_Mixing_RapAsym_3", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Mixing_RapAsym_sh = new THnSparseD("hldsld_Jet_pair_sube0_Mixing_RapAsym_sh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Mixing_RapAsym_oh = new THnSparseD("hldsld_Jet_pair_sube0_Mixing_RapAsym_oh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube0_Mixing = new THnSparseD("hldsld_Jet_pair_sube0_Mixing", "", 3, bins_pair, xmin_pair, xmax_pair);
+// for sube = 1
+THnSparseD* hldsld_Jet_pair_sube1_Mixing_RapAsym = new THnSparseD("hldsld_Jet_pair_sube1_Mixing_RapAsym", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Mixing_RapAsym_1 = new THnSparseD("hldsld_Jet_pair_sube1_Mixing_RapAsym_1", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Mixing_RapAsym_2 = new THnSparseD("hldsld_Jet_pair_sube1_Mixing_RapAsym_2", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Mixing_RapAsym_3 = new THnSparseD("hldsld_Jet_pair_sube1_Mixing_RapAsym_3", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Mixing_RapAsym_sh = new THnSparseD("hldsld_Jet_pair_sube1_Mixing_RapAsym_sh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Mixing_RapAsym_oh = new THnSparseD("hldsld_Jet_pair_sube1_Mixing_RapAsym_oh", "", 3, bins_pair, xmin_pair, xmax_pair);
+THnSparseD* hldsld_Jet_pair_sube1_Mixing = new THnSparseD("hldsld_Jet_pair_sube1_Mixing", "", 3, bins_pair, xmin_pair, xmax_pair);
 
 // reco/data
 //leading jet - trk
@@ -275,6 +326,23 @@ THnSparseD* hldJet_Trk_Mixing_RapAsym_3 = new THnSparseD("hldJet_Trk_Mixing_RapA
 THnSparseD* hldJet_Trk_Mixing_RapAsym_sh = new THnSparseD("hldJet_Trk_Mixing_RapAsym_sh", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Mixing_RapAsym_oh = new THnSparseD("hldJet_Trk_Mixing_RapAsym_oh", "", 5, bins_corr, xmin_corr, xmax_corr);
 THnSparseD* hldJet_Trk_Mixing = new THnSparseD("hldJet_Trk_Mixing", "", 5, bins_corr, xmin_corr, xmax_corr);
+// reco jet - gen tracks
+// for sube = 0
+THnSparseD* hldJet_sube0_Mixing_RapAsym = new THnSparseD("hldJet_sube0_Mixing_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Mixing_RapAsym_1 = new THnSparseD("hldJet_sube0_Mixing_RapAsym_1", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Mixing_RapAsym_2 = new THnSparseD("hldJet_sube0_Mixing_RapAsym_2", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Mixing_RapAsym_3 = new THnSparseD("hldJet_sube0_Mixing_RapAsym_3", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Mixing_RapAsym_sh = new THnSparseD("hldJet_sube0_Mixing_RapAsym_sh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Mixing_RapAsym_oh = new THnSparseD("hldJet_sube0_Mixing_RapAsym_oh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube0_Mixing = new THnSparseD("hldJet_sube0_Mixing", "", 5, bins_corr, xmin_corr, xmax_corr);
+// for sube = 1
+THnSparseD* hldJet_sube1_Mixing_RapAsym = new THnSparseD("hldJet_sube1_Mixing_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Mixing_RapAsym_1 = new THnSparseD("hldJet_sube1_Mixing_RapAsym_1", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Mixing_RapAsym_2 = new THnSparseD("hldJet_sube1_Mixing_RapAsym_2", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Mixing_RapAsym_3 = new THnSparseD("hldJet_sube1_Mixing_RapAsym_3", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Mixing_RapAsym_sh = new THnSparseD("hldJet_sube1_Mixing_RapAsym_sh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Mixing_RapAsym_oh = new THnSparseD("hldJet_sube1_Mixing_RapAsym_oh", "", 5, bins_corr, xmin_corr, xmax_corr);
+THnSparseD* hldJet_sube1_Mixing = new THnSparseD("hldJet_sube1_Mixing", "", 5, bins_corr, xmin_corr, xmax_corr);
 
 //subleading jet - trk
 THnSparseD* hsldJet_Trk_Mixing_RapAsym = new THnSparseD("hsldJet_Trk_Mixing_RapAsym", "", 5, bins_corr, xmin_corr, xmax_corr);
@@ -474,6 +542,24 @@ void sumw2()
   hldsld_Jet_pair_Signal_RapAsym_sh->Sumw2();
   hldsld_Jet_pair_Signal_RapAsym_oh->Sumw2();
   hldsld_Jet_pair_Signal->Sumw2();
+  // reco jet - gen tracks
+  //for sube = 0
+  hldsld_Jet_pair_sube0_Signal_RapAsym->Sumw2();
+  hldsld_Jet_pair_sube0_Signal_RapAsym_1->Sumw2();
+  hldsld_Jet_pair_sube0_Signal_RapAsym_2->Sumw2();
+  hldsld_Jet_pair_sube0_Signal_RapAsym_3->Sumw2();
+  hldsld_Jet_pair_sube0_Signal_RapAsym_sh->Sumw2();
+  hldsld_Jet_pair_sube0_Signal_RapAsym_oh->Sumw2();
+  hldsld_Jet_pair_sube0_Signal->Sumw2();
+  //for sube = 1
+  hldsld_Jet_pair_sube1_Signal_RapAsym->Sumw2();
+  hldsld_Jet_pair_sube1_Signal_RapAsym_1->Sumw2();
+  hldsld_Jet_pair_sube1_Signal_RapAsym_2->Sumw2();
+  hldsld_Jet_pair_sube1_Signal_RapAsym_3->Sumw2();
+  hldsld_Jet_pair_sube1_Signal_RapAsym_sh->Sumw2();
+  hldsld_Jet_pair_sube1_Signal_RapAsym_oh->Sumw2();
+  hldsld_Jet_pair_sube1_Signal->Sumw2();
+
   // reco/data correlation histograms
   // leading jet - trk
   hldJet_Trk_Signal_RapAsym->Sumw2();
@@ -483,6 +569,23 @@ void sumw2()
   hldJet_Trk_Signal_RapAsym_sh->Sumw2();
   hldJet_Trk_Signal_RapAsym_oh->Sumw2();
   hldJet_Trk_Signal->Sumw2();
+  // reco jet - gen tracks
+  //for sube = 0
+  hldJet_sube0_Signal_RapAsym->Sumw2();
+  hldJet_sube0_Signal_RapAsym_1->Sumw2();
+  hldJet_sube0_Signal_RapAsym_2->Sumw2();
+  hldJet_sube0_Signal_RapAsym_3->Sumw2();
+  hldJet_sube0_Signal_RapAsym_sh->Sumw2();
+  hldJet_sube0_Signal_RapAsym_oh->Sumw2();
+  hldJet_sube0_Signal->Sumw2();
+  //for sube = 1
+  hldJet_sube1_Signal_RapAsym->Sumw2();
+  hldJet_sube1_Signal_RapAsym_1->Sumw2();
+  hldJet_sube1_Signal_RapAsym_2->Sumw2();
+  hldJet_sube1_Signal_RapAsym_3->Sumw2();
+  hldJet_sube1_Signal_RapAsym_sh->Sumw2();
+  hldJet_sube1_Signal_RapAsym_oh->Sumw2();
+  hldJet_sube1_Signal->Sumw2();
 
   // subleading jet - trk
   hsldJet_Trk_Signal_RapAsym->Sumw2();
@@ -578,6 +681,24 @@ void sumw2()
   hldsld_Jet_pair_Mixing_RapAsym_sh->Sumw2();
   hldsld_Jet_pair_Mixing_RapAsym_oh->Sumw2();
   hldsld_Jet_pair_Mixing->Sumw2();
+  // reco jet - gen tracks
+  //for sube = 0
+  hldsld_Jet_pair_sube0_Mixing_RapAsym->Sumw2();
+  hldsld_Jet_pair_sube0_Mixing_RapAsym_1->Sumw2();
+  hldsld_Jet_pair_sube0_Mixing_RapAsym_2->Sumw2();
+  hldsld_Jet_pair_sube0_Mixing_RapAsym_3->Sumw2();
+  hldsld_Jet_pair_sube0_Mixing_RapAsym_sh->Sumw2();
+  hldsld_Jet_pair_sube0_Mixing_RapAsym_oh->Sumw2();
+  hldsld_Jet_pair_sube0_Mixing->Sumw2();
+  //for sube = 1
+  hldsld_Jet_pair_sube1_Mixing_RapAsym->Sumw2();
+  hldsld_Jet_pair_sube1_Mixing_RapAsym_1->Sumw2();
+  hldsld_Jet_pair_sube1_Mixing_RapAsym_2->Sumw2();
+  hldsld_Jet_pair_sube1_Mixing_RapAsym_3->Sumw2();
+  hldsld_Jet_pair_sube1_Mixing_RapAsym_sh->Sumw2();
+  hldsld_Jet_pair_sube1_Mixing_RapAsym_oh->Sumw2();
+  hldsld_Jet_pair_sube1_Mixing->Sumw2();
+
   // reco/data correlation histograms
   // leading jet - trk
   hldJet_Trk_Mixing_RapAsym->Sumw2();
@@ -587,7 +708,24 @@ void sumw2()
   hldJet_Trk_Mixing_RapAsym_sh->Sumw2();
   hldJet_Trk_Mixing_RapAsym_oh->Sumw2();
   hldJet_Trk_Mixing->Sumw2();
-
+  // reco jet - gen tracks
+  //for sube = 0
+  hldJet_sube0_Mixing_RapAsym->Sumw2();
+  hldJet_sube0_Mixing_RapAsym_1->Sumw2();
+  hldJet_sube0_Mixing_RapAsym_2->Sumw2();
+  hldJet_sube0_Mixing_RapAsym_3->Sumw2();
+  hldJet_sube0_Mixing_RapAsym_sh->Sumw2();
+  hldJet_sube0_Mixing_RapAsym_oh->Sumw2();
+  hldJet_sube0_Mixing->Sumw2();
+  //for sube = 1
+  hldJet_sube1_Mixing_RapAsym->Sumw2();
+  hldJet_sube1_Mixing_RapAsym_1->Sumw2();
+  hldJet_sube1_Mixing_RapAsym_2->Sumw2();
+  hldJet_sube1_Mixing_RapAsym_3->Sumw2();
+  hldJet_sube1_Mixing_RapAsym_sh->Sumw2();
+  hldJet_sube1_Mixing_RapAsym_oh->Sumw2();
+  hldJet_sube1_Mixing->Sumw2();
+  
   // subleading jet - trk
   hsldJet_Trk_Mixing_RapAsym->Sumw2();
   hsldJet_Trk_Mixing_RapAsym_1->Sumw2();
@@ -804,7 +942,7 @@ void Write_Trk_QA_hist(const bool& is_MC)
   hvtxz_Signal_4->Write();
 }
 
-void Write_Jet_Trk_Corr_hist(const bool& is_MC)
+void Write_Jet_Trk_Corr_hist(const bool& is_MC, const bool& isRcJetGnTrk)
 {
   // signal
   // for jet pairs
@@ -815,6 +953,28 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
   hldsld_Jet_pair_Signal_RapAsym_sh->Write();
   hldsld_Jet_pair_Signal_RapAsym_oh->Write();
   hldsld_Jet_pair_Signal->Write();
+
+  if(isRcJetGnTrk)
+    {
+      // reco jet - gen tracks
+      //for sube = 0
+      hldsld_Jet_pair_sube0_Signal_RapAsym->Write();
+      hldsld_Jet_pair_sube0_Signal_RapAsym_1->Write();
+      hldsld_Jet_pair_sube0_Signal_RapAsym_2->Write();
+      hldsld_Jet_pair_sube0_Signal_RapAsym_3->Write();
+      hldsld_Jet_pair_sube0_Signal_RapAsym_sh->Write();
+      hldsld_Jet_pair_sube0_Signal_RapAsym_oh->Write();
+      hldsld_Jet_pair_sube0_Signal->Write();
+      //for sube = 1
+      hldsld_Jet_pair_sube1_Signal_RapAsym->Write();
+      hldsld_Jet_pair_sube1_Signal_RapAsym_1->Write();
+      hldsld_Jet_pair_sube1_Signal_RapAsym_2->Write();
+      hldsld_Jet_pair_sube1_Signal_RapAsym_3->Write();
+      hldsld_Jet_pair_sube1_Signal_RapAsym_sh->Write();
+      hldsld_Jet_pair_sube1_Signal_RapAsym_oh->Write();
+      hldsld_Jet_pair_sube1_Signal->Write();
+    }
+  
   // reco/data correlation histograms
   // leading jet - trk
   hldJet_Trk_Signal_RapAsym->Write();
@@ -824,7 +984,28 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
   hldJet_Trk_Signal_RapAsym_sh->Write();
   hldJet_Trk_Signal_RapAsym_oh->Write();
   hldJet_Trk_Signal->Write();
-
+  
+  if(isRcJetGnTrk)
+    {
+      // reco jet - gen tracks
+      //for sube = 0
+      hldJet_sube0_Signal_RapAsym->Write();
+      hldJet_sube0_Signal_RapAsym_1->Write();
+      hldJet_sube0_Signal_RapAsym_2->Write();
+      hldJet_sube0_Signal_RapAsym_3->Write();
+      hldJet_sube0_Signal_RapAsym_sh->Write();
+      hldJet_sube0_Signal_RapAsym_oh->Write();
+      hldJet_sube0_Signal->Write();
+      //for sube = 1
+      hldJet_sube1_Signal_RapAsym->Write();
+      hldJet_sube1_Signal_RapAsym_1->Write();
+      hldJet_sube1_Signal_RapAsym_2->Write();
+      hldJet_sube1_Signal_RapAsym_3->Write();
+      hldJet_sube1_Signal_RapAsym_sh->Write();
+      hldJet_sube1_Signal_RapAsym_oh->Write();
+      hldJet_sube1_Signal->Write();
+    }
+  
   /*
   // subleading jet - trk
   hsldJet_Trk_Signal_RapAsym->Write();
@@ -845,6 +1026,28 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
   hldsld_Jet_pair_Mixing_RapAsym_sh->Write();
   hldsld_Jet_pair_Mixing_RapAsym_oh->Write();
   hldsld_Jet_pair_Mixing->Write();
+
+  if(isRcJetGnTrk)
+    {
+      // reco jet - gen tracks
+      //for sube = 0
+      hldsld_Jet_pair_sube0_Mixing_RapAsym->Write();
+      hldsld_Jet_pair_sube0_Mixing_RapAsym_1->Write();
+      hldsld_Jet_pair_sube0_Mixing_RapAsym_2->Write();
+      hldsld_Jet_pair_sube0_Mixing_RapAsym_3->Write();
+      hldsld_Jet_pair_sube0_Mixing_RapAsym_sh->Write();
+      hldsld_Jet_pair_sube0_Mixing_RapAsym_oh->Write();
+      hldsld_Jet_pair_sube0_Mixing->Write();
+      //for sube = 1
+      hldsld_Jet_pair_sube1_Mixing_RapAsym->Write();
+      hldsld_Jet_pair_sube1_Mixing_RapAsym_1->Write();
+      hldsld_Jet_pair_sube1_Mixing_RapAsym_2->Write();
+      hldsld_Jet_pair_sube1_Mixing_RapAsym_3->Write();
+      hldsld_Jet_pair_sube1_Mixing_RapAsym_sh->Write();
+      hldsld_Jet_pair_sube1_Mixing_RapAsym_oh->Write();
+      hldsld_Jet_pair_sube1_Mixing->Write();
+    }
+  
   // reco/data correlation histograms
   // leading jet - trk
   hldJet_Trk_Mixing_RapAsym->Write();
@@ -854,6 +1057,27 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
   hldJet_Trk_Mixing_RapAsym_sh->Write();
   hldJet_Trk_Mixing_RapAsym_oh->Write();
   hldJet_Trk_Mixing->Write();
+
+  if(isRcJetGnTrk)
+    {
+      // reco jet - gen tracks
+      //for sube = 0
+      hldJet_sube0_Mixing_RapAsym->Write();
+      hldJet_sube0_Mixing_RapAsym_1->Write();
+      hldJet_sube0_Mixing_RapAsym_2->Write();
+      hldJet_sube0_Mixing_RapAsym_3->Write();
+      hldJet_sube0_Mixing_RapAsym_sh->Write();
+      hldJet_sube0_Mixing_RapAsym_oh->Write();
+      hldJet_sube0_Mixing->Write();
+      //for sube = 1
+      hldJet_sube1_Mixing_RapAsym->Write();
+      hldJet_sube1_Mixing_RapAsym_1->Write();
+      hldJet_sube1_Mixing_RapAsym_2->Write();
+      hldJet_sube1_Mixing_RapAsym_3->Write();
+      hldJet_sube1_Mixing_RapAsym_sh->Write();
+      hldJet_sube1_Mixing_RapAsym_oh->Write();
+      hldJet_sube1_Mixing->Write();
+    }
   
   /*
   // subleading jet - trk
@@ -877,22 +1101,26 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
       hldsld_GenJet_pair_Signal_RapAsym_sh->Write();
       hldsld_GenJet_pair_Signal_RapAsym_oh->Write();
       hldsld_GenJet_pair_Signal->Write();
-      // for sube = 0
-      hldsld_GenJet_pair_sube0_Signal_RapAsym->Write();
-      hldsld_GenJet_pair_sube0_Signal_RapAsym_1->Write();
-      hldsld_GenJet_pair_sube0_Signal_RapAsym_2->Write();
-      hldsld_GenJet_pair_sube0_Signal_RapAsym_3->Write();
-      hldsld_GenJet_pair_sube0_Signal_RapAsym_sh->Write();
-      hldsld_GenJet_pair_sube0_Signal_RapAsym_oh->Write();
-      hldsld_GenJet_pair_sube0_Signal->Write();
-      // for sube = 1
-      hldsld_GenJet_pair_sube1_Signal_RapAsym->Write();
-      hldsld_GenJet_pair_sube1_Signal_RapAsym_1->Write();
-      hldsld_GenJet_pair_sube1_Signal_RapAsym_2->Write();
-      hldsld_GenJet_pair_sube1_Signal_RapAsym_3->Write();
-      hldsld_GenJet_pair_sube1_Signal_RapAsym_sh->Write();
-      hldsld_GenJet_pair_sube1_Signal_RapAsym_oh->Write();
-      hldsld_GenJet_pair_sube1_Signal->Write();
+      
+      if(!isRcJetGnTrk)
+	{
+	  // for sube = 0
+	  hldsld_GenJet_pair_sube0_Signal_RapAsym->Write();
+	  hldsld_GenJet_pair_sube0_Signal_RapAsym_1->Write();
+	  hldsld_GenJet_pair_sube0_Signal_RapAsym_2->Write();
+	  hldsld_GenJet_pair_sube0_Signal_RapAsym_3->Write();
+	  hldsld_GenJet_pair_sube0_Signal_RapAsym_sh->Write();
+	  hldsld_GenJet_pair_sube0_Signal_RapAsym_oh->Write();
+	  hldsld_GenJet_pair_sube0_Signal->Write();
+	  // for sube = 1
+	  hldsld_GenJet_pair_sube1_Signal_RapAsym->Write();
+	  hldsld_GenJet_pair_sube1_Signal_RapAsym_1->Write();
+	  hldsld_GenJet_pair_sube1_Signal_RapAsym_2->Write();
+	  hldsld_GenJet_pair_sube1_Signal_RapAsym_3->Write();
+	  hldsld_GenJet_pair_sube1_Signal_RapAsym_sh->Write();
+	  hldsld_GenJet_pair_sube1_Signal_RapAsym_oh->Write();
+	  hldsld_GenJet_pair_sube1_Signal->Write();
+	}
       
       // gen correlation histograms
       // leading jet - trk
@@ -903,22 +1131,26 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
       hldGenJet_Trk_Signal_RapAsym_sh->Write();
       hldGenJet_Trk_Signal_RapAsym_oh->Write();
       hldGenJet_Trk_Signal->Write();
-      // for sube = 0
-      hldGenJet_Trk_sube0_Signal_RapAsym->Write();
-      hldGenJet_Trk_sube0_Signal_RapAsym_1->Write();
-      hldGenJet_Trk_sube0_Signal_RapAsym_2->Write();
-      hldGenJet_Trk_sube0_Signal_RapAsym_3->Write();
-      hldGenJet_Trk_sube0_Signal_RapAsym_sh->Write();
-      hldGenJet_Trk_sube0_Signal_RapAsym_oh->Write();
-      hldGenJet_Trk_sube0_Signal->Write();
-      // for sube = 1
-      hldGenJet_Trk_sube1_Signal_RapAsym->Write();
-      hldGenJet_Trk_sube1_Signal_RapAsym_1->Write();
-      hldGenJet_Trk_sube1_Signal_RapAsym_2->Write();
-      hldGenJet_Trk_sube1_Signal_RapAsym_3->Write();
-      hldGenJet_Trk_sube1_Signal_RapAsym_sh->Write();
-      hldGenJet_Trk_sube1_Signal_RapAsym_oh->Write();
-      hldGenJet_Trk_sube1_Signal->Write();
+      
+      if(!isRcJetGnTrk)
+	{
+	  // for sube = 0
+	  hldGenJet_Trk_sube0_Signal_RapAsym->Write();
+	  hldGenJet_Trk_sube0_Signal_RapAsym_1->Write();
+	  hldGenJet_Trk_sube0_Signal_RapAsym_2->Write();
+	  hldGenJet_Trk_sube0_Signal_RapAsym_3->Write();
+	  hldGenJet_Trk_sube0_Signal_RapAsym_sh->Write();
+	  hldGenJet_Trk_sube0_Signal_RapAsym_oh->Write();
+	  hldGenJet_Trk_sube0_Signal->Write();
+	  // for sube = 1
+	  hldGenJet_Trk_sube1_Signal_RapAsym->Write();
+	  hldGenJet_Trk_sube1_Signal_RapAsym_1->Write();
+	  hldGenJet_Trk_sube1_Signal_RapAsym_2->Write();
+	  hldGenJet_Trk_sube1_Signal_RapAsym_3->Write();
+	  hldGenJet_Trk_sube1_Signal_RapAsym_sh->Write();
+	  hldGenJet_Trk_sube1_Signal_RapAsym_oh->Write();
+	  hldGenJet_Trk_sube1_Signal->Write();
+	}
       /*
       // subleading jet - trk
       hsldGenJet_Trk_Signal_RapAsym->Write();
@@ -955,23 +1187,27 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
       hldsld_GenJet_pair_Mixing_RapAsym_sh->Write();
       hldsld_GenJet_pair_Mixing_RapAsym_oh->Write();
       hldsld_GenJet_pair_Mixing->Write();
-      // for sube = 0
-      hldsld_GenJet_pair_sube0_Mixing_RapAsym->Write();
-      hldsld_GenJet_pair_sube0_Mixing_RapAsym_1->Write();
-      hldsld_GenJet_pair_sube0_Mixing_RapAsym_2->Write();
-      hldsld_GenJet_pair_sube0_Mixing_RapAsym_3->Write();
-      hldsld_GenJet_pair_sube0_Mixing_RapAsym_sh->Write();
-      hldsld_GenJet_pair_sube0_Mixing_RapAsym_oh->Write();
-      hldsld_GenJet_pair_sube0_Mixing->Write();
-      // for sube = 1
-      hldsld_GenJet_pair_sube1_Mixing_RapAsym->Write();
-      hldsld_GenJet_pair_sube1_Mixing_RapAsym_1->Write();
-      hldsld_GenJet_pair_sube1_Mixing_RapAsym_2->Write();
-      hldsld_GenJet_pair_sube1_Mixing_RapAsym_3->Write();
-      hldsld_GenJet_pair_sube1_Mixing_RapAsym_sh->Write();
-      hldsld_GenJet_pair_sube1_Mixing_RapAsym_oh->Write();
-      hldsld_GenJet_pair_sube1_Mixing->Write();
 
+      if(!isRcJetGnTrk)
+	{
+	  // for sube = 0
+	  hldsld_GenJet_pair_sube0_Mixing_RapAsym->Write();
+	  hldsld_GenJet_pair_sube0_Mixing_RapAsym_1->Write();
+	  hldsld_GenJet_pair_sube0_Mixing_RapAsym_2->Write();
+	  hldsld_GenJet_pair_sube0_Mixing_RapAsym_3->Write();
+	  hldsld_GenJet_pair_sube0_Mixing_RapAsym_sh->Write();
+	  hldsld_GenJet_pair_sube0_Mixing_RapAsym_oh->Write();
+	  hldsld_GenJet_pair_sube0_Mixing->Write();
+	  // for sube = 1
+	  hldsld_GenJet_pair_sube1_Mixing_RapAsym->Write();
+	  hldsld_GenJet_pair_sube1_Mixing_RapAsym_1->Write();
+	  hldsld_GenJet_pair_sube1_Mixing_RapAsym_2->Write();
+	  hldsld_GenJet_pair_sube1_Mixing_RapAsym_3->Write();
+	  hldsld_GenJet_pair_sube1_Mixing_RapAsym_sh->Write();
+	  hldsld_GenJet_pair_sube1_Mixing_RapAsym_oh->Write();
+	  hldsld_GenJet_pair_sube1_Mixing->Write();
+	}
+      
       // gen correlation histograms
       // leading jet - trk
       hldGenJet_Trk_Mixing_RapAsym->Write();
@@ -981,22 +1217,27 @@ void Write_Jet_Trk_Corr_hist(const bool& is_MC)
       hldGenJet_Trk_Mixing_RapAsym_sh->Write();
       hldGenJet_Trk_Mixing_RapAsym_oh->Write();
       hldGenJet_Trk_Mixing->Write();
-      // for sube = 0
-      hldGenJet_Trk_sube0_Mixing_RapAsym->Write();
-      hldGenJet_Trk_sube0_Mixing_RapAsym_1->Write();
-      hldGenJet_Trk_sube0_Mixing_RapAsym_2->Write();
-      hldGenJet_Trk_sube0_Mixing_RapAsym_3->Write();
-      hldGenJet_Trk_sube0_Mixing_RapAsym_sh->Write();
-      hldGenJet_Trk_sube0_Mixing_RapAsym_oh->Write();
-      hldGenJet_Trk_sube0_Mixing->Write();
-      // for sube = 1
-      hldGenJet_Trk_sube1_Mixing_RapAsym->Write();
-      hldGenJet_Trk_sube1_Mixing_RapAsym_1->Write();
-      hldGenJet_Trk_sube1_Mixing_RapAsym_2->Write();
-      hldGenJet_Trk_sube1_Mixing_RapAsym_3->Write();
-      hldGenJet_Trk_sube1_Mixing_RapAsym_sh->Write();
-      hldGenJet_Trk_sube1_Mixing_RapAsym_oh->Write();
-      hldGenJet_Trk_sube1_Mixing->Write();
+
+      if(!isRcJetGnTrk)
+	{
+	  // for sube = 0
+	  hldGenJet_Trk_sube0_Mixing_RapAsym->Write();
+	  hldGenJet_Trk_sube0_Mixing_RapAsym_1->Write();
+	  hldGenJet_Trk_sube0_Mixing_RapAsym_2->Write();
+	  hldGenJet_Trk_sube0_Mixing_RapAsym_3->Write();
+	  hldGenJet_Trk_sube0_Mixing_RapAsym_sh->Write();
+	  hldGenJet_Trk_sube0_Mixing_RapAsym_oh->Write();
+	  hldGenJet_Trk_sube0_Mixing->Write();
+	  // for sube = 1
+	  hldGenJet_Trk_sube1_Mixing_RapAsym->Write();
+	  hldGenJet_Trk_sube1_Mixing_RapAsym_1->Write();
+	  hldGenJet_Trk_sube1_Mixing_RapAsym_2->Write();
+	  hldGenJet_Trk_sube1_Mixing_RapAsym_3->Write();
+	  hldGenJet_Trk_sube1_Mixing_RapAsym_sh->Write();
+	  hldGenJet_Trk_sube1_Mixing_RapAsym_oh->Write();
+	  hldGenJet_Trk_sube1_Mixing->Write();
+	}
+      
       /*
       // subleading jet - trk
       hsldGenJet_Trk_Mixing_RapAsym->Write();

@@ -79,7 +79,7 @@ void find_leading_jets(double pt, double eta, double phi, int index, double refp
     }
 }
 
-void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube)
+void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk)
 {
   std::cout<<endl;
   if(Evtw_vec_1D.size() != Filtered_ldjet_vec_1D.size()){std::cout<<"event numbers are not same, pleaes check"<<std::endl;}
@@ -119,10 +119,14 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
       	    
       if(ldJet_pt < leading_pT_min_cut || sldJet_pt < subleading_pT_min_cut || fabs(ldJet_eta) > jet_eta_max_cut || fabs(sldJet_eta) > jet_eta_max_cut) {std::cout<<"Leading and subleading jets are out of pT and eta cuts, please check"<<std::endl;}
 
-      int ldjtTRkCorr = 0, ldjtTRkCorr_RapAsym = 0, ldjtTRkCorr_RapAsym_1 = 0, ldjtTRkCorr_RapAsym_2 = 0, ldjtTRkCorr_RapAsym_3 = 0, ldjtTRkCorr_RapAsym_sh = 0, ldjtTRkCorr_RapAsym_oh = 0;
-      int gn_ldjtTRkCorr = 0, gn_ldjtTRkCorr_RapAsym = 0, gn_ldjtTRkCorr_RapAsym_1 = 0, gn_ldjtTRkCorr_RapAsym_2 = 0, gn_ldjtTRkCorr_RapAsym_3 = 0, gn_ldjtTRkCorr_RapAsym_sh = 0, gn_ldjtTRkCorr_RapAsym_oh = 0;
-      int gn_sube0_ldjtTRkCorr = 0, gn_sube0_ldjtTRkCorr_RapAsym = 0, gn_sube0_ldjtTRkCorr_RapAsym_1 = 0, gn_sube0_ldjtTRkCorr_RapAsym_2 = 0, gn_sube0_ldjtTRkCorr_RapAsym_3 = 0, gn_sube0_ldjtTRkCorr_RapAsym_sh = 0, gn_sube0_ldjtTRkCorr_RapAsym_oh = 0;
-      int gn_sube1_ldjtTRkCorr = 0, gn_sube1_ldjtTRkCorr_RapAsym = 0, gn_sube1_ldjtTRkCorr_RapAsym_1 = 0, gn_sube1_ldjtTRkCorr_RapAsym_2 = 0, gn_sube1_ldjtTRkCorr_RapAsym_3 = 0, gn_sube1_ldjtTRkCorr_RapAsym_sh = 0, gn_sube1_ldjtTRkCorr_RapAsym_oh = 0;
+      if(fabs(ldJet_eta) > 0.5) continue; // for test
+      
+      int ldjtTRkCorr = 0, ldjtTRkCorr_RapAsym = 0, ldjtTRkCorr_RapAsym_1 = 0, ldjtTRkCorr_RapAsym_2 = 0, ldjtTRkCorr_RapAsym_3 = 0, ldjtTRkCorr_RapAsym_sh = 0, ldjtTRkCorr_RapAsym_oh = 0; // for reco jet reco trks
+      int rcJet_gnTrk_sube0_ldjtTRkCorr = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_1 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_2 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_3 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_sh = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_oh = 0; // reco jet gen trks sub == 0
+      int rcJet_gnTrk_sube1_ldjtTRkCorr = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_1 = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_2 = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_3 = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_sh = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_oh = 0; // reco jet gen trks sub > 0
+      int gn_ldjtTRkCorr = 0, gn_ldjtTRkCorr_RapAsym = 0, gn_ldjtTRkCorr_RapAsym_1 = 0, gn_ldjtTRkCorr_RapAsym_2 = 0, gn_ldjtTRkCorr_RapAsym_3 = 0, gn_ldjtTRkCorr_RapAsym_sh = 0, gn_ldjtTRkCorr_RapAsym_oh = 0; // for gen jets gen trks
+      int gn_sube0_ldjtTRkCorr = 0, gn_sube0_ldjtTRkCorr_RapAsym = 0, gn_sube0_ldjtTRkCorr_RapAsym_1 = 0, gn_sube0_ldjtTRkCorr_RapAsym_2 = 0, gn_sube0_ldjtTRkCorr_RapAsym_3 = 0, gn_sube0_ldjtTRkCorr_RapAsym_sh = 0, gn_sube0_ldjtTRkCorr_RapAsym_oh = 0; // for gen jets gen trks sube == 0
+      int gn_sube1_ldjtTRkCorr = 0, gn_sube1_ldjtTRkCorr_RapAsym = 0, gn_sube1_ldjtTRkCorr_RapAsym_1 = 0, gn_sube1_ldjtTRkCorr_RapAsym_2 = 0, gn_sube1_ldjtTRkCorr_RapAsym_3 = 0, gn_sube1_ldjtTRkCorr_RapAsym_sh = 0, gn_sube1_ldjtTRkCorr_RapAsym_oh = 0; // for gen jets gen trks sube > 0
 
       double TotalNtrk = 0., TotalNtrk_gen_sube0 = 0., TotalNtrk_gen_sube1 = 0.;
       double TotalNtrkOffline = 0.;
@@ -203,71 +207,211 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 	    {
 	      ldjtTRkCorr++;
 	      
+	      if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+		{
+		  if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr++;}
+		  else {rcJet_gnTrk_sube1_ldjtTRkCorr++;}
+		}
+	      
 	      // leading jet -trk
 	      hldJet_Trk_Signal->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
 	      
 	      // subleading jet -trk
 	      hsldJet_Trk_Signal->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
+
+	      if(do_sube_rcjetgntrk) // for sube
+		{
+		  if(trk_sube == 0)
+		    {
+		      // leading reco jet - gentrk
+		      hldJet_sube0_Signal->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+		    }
+		  else
+		    {
+		      // leading reco jet - gentrk
+		      hldJet_sube1_Signal->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+		    }
+		}
 	      
 	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
 		{
 		  ldjtTRkCorr_RapAsym++;
-		  
+
+		  if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+		    {
+		      if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym++;}
+		      else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym++;}
+		    }
+			      
 		  // leading jet -trk
 		  hldJet_Trk_Signal_RapAsym->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
 		  
 		  // subleading jet -trk
 		  hsldJet_Trk_Signal_RapAsym->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
 
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(trk_sube == 0)
+			{
+			  // leading reco jet - gentrk
+			  hldJet_sube0_Signal_RapAsym->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			}
+		      else
+			{
+			  // leading reco jet - gentrk
+			  hldJet_sube1_Signal_RapAsym->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			}
+		    }
+		  
 		  if(Deta_ldsldJet < 0.5) // mid rapidity
 		    {
 		      ldjtTRkCorr_RapAsym_1++;
-		      
+
+		      if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			{
+			  if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_1++;}
+			  else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_1++;}
+			}
+
 		      // leading jet -trk
 		      hldJet_Trk_Signal_RapAsym_1->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
 		      
 		      // subleading jet -trk
 		      hsldJet_Trk_Signal_RapAsym_1->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
+
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(trk_sube == 0)
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube0_Signal_RapAsym_1->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			  else
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube1_Signal_RapAsym_1->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			}
 		    }
 		  else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) // intermediate rapidity
 		    {
 		      ldjtTRkCorr_RapAsym_2++;
-		      
+
+		      if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			{
+			  if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_2++;}
+			  else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_2++;}
+			}
+				      
 		      // leading jet -trk
 		      hldJet_Trk_Signal_RapAsym_2->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
 		      
 		      // subleading jet -trk
 		      hsldJet_Trk_Signal_RapAsym_2->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
+
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(trk_sube == 0)
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube0_Signal_RapAsym_2->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			  else
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube1_Signal_RapAsym_2->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			}
 		    }
 		  else if(Deta_ldsldJet > 1.0) // higher rapidity
 		    {
 		      ldjtTRkCorr_RapAsym_3++;
+		      
+		      if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			{
+			  if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_3++;}
+			  else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_3++;}
+			}
 		      
 		      // leading jet -trk
 		      hldJet_Trk_Signal_RapAsym_3->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
 		      
 		      // subleading jet -trk
 		      hsldJet_Trk_Signal_RapAsym_3->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
+		      
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(trk_sube == 0)
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube0_Signal_RapAsym_3->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			  else
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube1_Signal_RapAsym_3->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			}
 		    }
 		  if((ldJet_eta)*(sldJet_eta) > 0) // same hemisphere 
 		    {
 		      ldjtTRkCorr_RapAsym_sh++;
 		      
+		      if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			{
+			  if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_sh++;}
+			  else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_sh++;}
+			}
+
 		      // leading jet -trk
 		      hldJet_Trk_Signal_RapAsym_sh->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
 		      
 		      // subleading jet -trk
 		      hsldJet_Trk_Signal_RapAsym_sh->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
+
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(trk_sube == 0)
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube0_Signal_RapAsym_sh->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			  else
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube1_Signal_RapAsym_sh->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			}
 		    }
 		  else if((ldJet_eta)*(sldJet_eta) < 0) // opposite hemisphere
 		    {
 		      ldjtTRkCorr_RapAsym_oh++;
 		      
+		      if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			{
+			  if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_oh++;}
+			  else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_oh++;}
+			}
+				      
 		      // leading jet -trk
 		      hldJet_Trk_Signal_RapAsym_oh->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
 		      
 		      // subleading jet -trk
 		      hsldJet_Trk_Signal_RapAsym_oh->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
+		      
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(trk_sube == 0)
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube0_Signal_RapAsym_oh->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			  else
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube1_Signal_RapAsym_oh->Fill(ldjet_trk_signal, (evtw*ldJetW*trk_w));
+			    }
+			}
 		    }
 		}
 	    } // for reco/data
@@ -566,30 +710,63 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
       if(isrc)
 	{
 	  if(ldjtTRkCorr > 0) {hldsld_Jet_pair_Signal->Fill(jet_pair, (evtw*ldJetW));}
-	  
+	  if(do_sube_rcjetgntrk) // for sube
+	    {
+	      if(rcJet_gnTrk_sube0_ldjtTRkCorr > 0){hldsld_Jet_pair_sube0_Signal->Fill(jet_pair, (evtw*ldJetW));}
+	      if(rcJet_gnTrk_sube1_ldjtTRkCorr > 0){hldsld_Jet_pair_sube1_Signal->Fill(jet_pair, (evtw*ldJetW));}
+	    }
 	  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry                                                                             
 	    {
 	      if(ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_Signal_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
-	      
+	      if(do_sube_rcjetgntrk) // for sube
+		{
+		  if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube0_Signal_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
+		  if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube1_Signal_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
+		}
 	      if(Deta_ldsldJet < 0.5) // mid rapidity
 		{
 		  if(ldjtTRkCorr_RapAsym_1 > 0){hldsld_Jet_pair_Signal_RapAsym_1->Fill(jet_pair, (evtw*ldJetW));}
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_1 > 0){hldsld_Jet_pair_sube0_Signal_RapAsym_1->Fill(jet_pair, (evtw*ldJetW));}
+		      if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_1 > 0){hldsld_Jet_pair_sube1_Signal_RapAsym_1->Fill(jet_pair, (evtw*ldJetW));}
+		    }
 		}
 	      else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) // intermediate rapidity
 		{
 		  if(ldjtTRkCorr_RapAsym_2 > 0){hldsld_Jet_pair_Signal_RapAsym_2->Fill(jet_pair, (evtw*ldJetW));}
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_2 > 0){hldsld_Jet_pair_sube0_Signal_RapAsym_2->Fill(jet_pair, (evtw*ldJetW));}
+		      if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_2 > 0){hldsld_Jet_pair_sube1_Signal_RapAsym_2->Fill(jet_pair, (evtw*ldJetW));}
+		    }
 		}
 	      else if(Deta_ldsldJet > 1.0) // higher rapidity
 		{
 		  if(ldjtTRkCorr_RapAsym_3 > 0){hldsld_Jet_pair_Signal_RapAsym_3->Fill(jet_pair, (evtw*ldJetW));}
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_3 > 0){hldsld_Jet_pair_sube0_Signal_RapAsym_3->Fill(jet_pair, (evtw*ldJetW));}
+		      if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_3 > 0){hldsld_Jet_pair_sube1_Signal_RapAsym_3->Fill(jet_pair, (evtw*ldJetW));}
+		    }
 		}
 	      if((ldJet_eta)*(sldJet_eta) > 0) // same hemisphere
 		{
 		  if(ldjtTRkCorr_RapAsym_sh > 0){hldsld_Jet_pair_Signal_RapAsym_sh->Fill(jet_pair, (evtw*ldJetW));}
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_sh > 0){hldsld_Jet_pair_sube0_Signal_RapAsym_sh->Fill(jet_pair, (evtw*ldJetW));}
+		      if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_sh > 0){hldsld_Jet_pair_sube1_Signal_RapAsym_sh->Fill(jet_pair, (evtw*ldJetW));}
+		    }
 		}
 	      else if((ldJet_eta)*(sldJet_eta) < 0) // opposite hemisphere
 		{
 		  if(ldjtTRkCorr_RapAsym_oh > 0){hldsld_Jet_pair_Signal_RapAsym_oh->Fill(jet_pair, (evtw*ldJetW));}
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_oh > 0){hldsld_Jet_pair_sube0_Signal_RapAsym_oh->Fill(jet_pair, (evtw*ldJetW));}
+		      if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_oh > 0){hldsld_Jet_pair_sube1_Signal_RapAsym_oh->Fill(jet_pair, (evtw*ldJetW));}
+		    }		  
 		}
 	    }
 	}
@@ -666,7 +843,7 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
   std::cout<<endl;
 }// function loop
 
-void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<int>& EvtCount_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube)
+void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<int>& EvtCount_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk)
 {
   std::cout<<endl;
 
@@ -712,6 +889,8 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
       
       double Deta_ldsldJet = fabs(ldJet_eta - sldJet_eta);
 
+      if(fabs(ldJet_eta) > 0.5) continue; // for test
+      
       /*
       // mixing algorithm
       int mixstart = ievt+1;
@@ -751,7 +930,7 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 
 	  if(colliding_system == "PbPb")
 	    {
-	      //if((fabs(vz - vz_j) < Dvz_cut) && (ctbin == ctbin_j) && (fabs(centbin - centbin_j) < Dhibin_cut) && (evtno != evtno_j) && (fabs(ntrk - ntrk_j) < Dntrk_cut))
+	      //if((fabs(vz - vz_j) < Dvz_cut) && (ctbin == ctbin_j) && (fabs(centbin - centbin_j) <= Dhibin_cut) && (evtno != evtno_j) && (fabs(ntrk - ntrk_j) <= Dntrk_cut))
 	      if((fabs(vz - vz_j) <= Dvz_cut) && (ctbin == ctbin_j) && (fabs(centbin - centbin_j) <= Dhibin_cut) && (evtno != evtno_j))
 		{
 		  SelectMBEventCountIDForMixing.push_back(EventCountID); // push_back the selected event counts for mixing
@@ -788,12 +967,14 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 	  double evtw = evtw_i;
 	  if(colliding_system == "PbPb") {evtw = (evtw_i)*(evtw_j);}
 	  */
-	  
-	  int ldjtTRkCorr = 0, ldjtTRkCorr_RapAsym = 0, ldjtTRkCorr_RapAsym_1 = 0, ldjtTRkCorr_RapAsym_2 = 0, ldjtTRkCorr_RapAsym_3 = 0, ldjtTRkCorr_RapAsym_sh = 0, ldjtTRkCorr_RapAsym_oh = 0;
-	  int gn_ldjtTRkCorr = 0, gn_ldjtTRkCorr_RapAsym = 0, gn_ldjtTRkCorr_RapAsym_1 = 0, gn_ldjtTRkCorr_RapAsym_2 = 0, gn_ldjtTRkCorr_RapAsym_3 = 0, gn_ldjtTRkCorr_RapAsym_sh = 0, gn_ldjtTRkCorr_RapAsym_oh = 0;
-	  int gn_sube0_ldjtTRkCorr = 0, gn_sube0_ldjtTRkCorr_RapAsym = 0, gn_sube0_ldjtTRkCorr_RapAsym_1 = 0, gn_sube0_ldjtTRkCorr_RapAsym_2 = 0, gn_sube0_ldjtTRkCorr_RapAsym_3 = 0, gn_sube0_ldjtTRkCorr_RapAsym_sh = 0, gn_sube0_ldjtTRkCorr_RapAsym_oh = 0;
-	  int gn_sube1_ldjtTRkCorr = 0, gn_sube1_ldjtTRkCorr_RapAsym = 0, gn_sube1_ldjtTRkCorr_RapAsym_1 = 0, gn_sube1_ldjtTRkCorr_RapAsym_2 = 0, gn_sube1_ldjtTRkCorr_RapAsym_3 = 0, gn_sube1_ldjtTRkCorr_RapAsym_sh = 0, gn_sube1_ldjtTRkCorr_RapAsym_oh = 0;
 
+	  int ldjtTRkCorr = 0, ldjtTRkCorr_RapAsym = 0, ldjtTRkCorr_RapAsym_1 = 0, ldjtTRkCorr_RapAsym_2 = 0, ldjtTRkCorr_RapAsym_3 = 0, ldjtTRkCorr_RapAsym_sh = 0, ldjtTRkCorr_RapAsym_oh = 0; // for reco jet reco trks
+	  int rcJet_gnTrk_sube0_ldjtTRkCorr = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_1 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_2 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_3 = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_sh = 0, rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_oh = 0; // reco jet gen trks sub == 0
+	  int rcJet_gnTrk_sube1_ldjtTRkCorr = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_1 = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_2 = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_3 = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_sh = 0, rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_oh = 0; // reco jet gen trks sub > 0
+	  int gn_ldjtTRkCorr = 0, gn_ldjtTRkCorr_RapAsym = 0, gn_ldjtTRkCorr_RapAsym_1 = 0, gn_ldjtTRkCorr_RapAsym_2 = 0, gn_ldjtTRkCorr_RapAsym_3 = 0, gn_ldjtTRkCorr_RapAsym_sh = 0, gn_ldjtTRkCorr_RapAsym_oh = 0; // for gen jets gen trks
+	  int gn_sube0_ldjtTRkCorr = 0, gn_sube0_ldjtTRkCorr_RapAsym = 0, gn_sube0_ldjtTRkCorr_RapAsym_1 = 0, gn_sube0_ldjtTRkCorr_RapAsym_2 = 0, gn_sube0_ldjtTRkCorr_RapAsym_3 = 0, gn_sube0_ldjtTRkCorr_RapAsym_sh = 0, gn_sube0_ldjtTRkCorr_RapAsym_oh = 0; // for gen jets gen trks sube == 0
+	  int gn_sube1_ldjtTRkCorr = 0, gn_sube1_ldjtTRkCorr_RapAsym = 0, gn_sube1_ldjtTRkCorr_RapAsym_1 = 0, gn_sube1_ldjtTRkCorr_RapAsym_2 = 0, gn_sube1_ldjtTRkCorr_RapAsym_3 = 0, gn_sube1_ldjtTRkCorr_RapAsym_sh = 0, gn_sube1_ldjtTRkCorr_RapAsym_oh = 0; // for gen jets gen trks sube > 0
+	  
 	  double TotalNtrk = 0.;
 
 	  for(int itrk = 0; itrk < Filtered_Trk_pT_vec_2D[MixEvtID].size(); itrk++)
@@ -860,72 +1041,209 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 		{
 		  ldjtTRkCorr++;
 
+		  if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+		    {
+		      if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr++;}
+		      else {rcJet_gnTrk_sube1_ldjtTRkCorr++;}
+		    }
+		  
 		  // leading jet -trk
 		  hldJet_Trk_Mixing->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 		  
 		  // subleading jet -trk
 		  hsldJet_Trk_Mixing->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
 
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(trk_sube == 0)
+			{
+			  // leading reco jet - gentrk
+			  hldJet_sube0_Mixing->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+			}
+		      else
+			{
+			  // leading reco jet - gentrk
+			  hldJet_sube1_Mixing->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+			}
+		    }
 		  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
 		    {
 		      ldjtTRkCorr_RapAsym++;
-		      		      
+
+		      if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			{
+			  if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym++;}
+			  else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym++;}
+			}
+		      
 		      // leading jet -trk
 		      hldJet_Trk_Mixing_RapAsym->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 
 		      // subleading jet -trk
 		      hsldJet_Trk_Mixing_RapAsym->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
 
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(trk_sube == 0)
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube0_Mixing_RapAsym->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+			    }
+			  else
+			    {
+			      // leading reco jet - gentrk
+			      hldJet_sube1_Mixing_RapAsym->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+			    }
+			}
 		      if(Deta_ldsldJet < 0.5) // mid rapidity
 			{
 			  ldjtTRkCorr_RapAsym_1++;
+
+			  if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			    {
+			      if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_1++;}
+			      else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_1++;}
+			    }
 			  
 			  // leading jet -trk
 			  hldJet_Trk_Mixing_RapAsym_1->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 			  
 			  // subleading jet -trk
 			  hsldJet_Trk_Mixing_RapAsym_1->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
+
+			  if(do_sube_rcjetgntrk) // for sube
+			    {
+			      if(trk_sube == 0)
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube0_Mixing_RapAsym_1->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			      else
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube1_Mixing_RapAsym_1->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			    }
 			}
 		      else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) // intermediate rapidity
 			{
 			  ldjtTRkCorr_RapAsym_2++;
-									  
+			  
+			  if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			    {
+			      if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_2++;}
+			      else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_2++;}
+			    }
+			  
 			  // leading jet -trk
 			  hldJet_Trk_Mixing_RapAsym_2->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 			  
 			  // subleading jet -trk
 			  hsldJet_Trk_Mixing_RapAsym_2->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
+
+			  if(do_sube_rcjetgntrk) // for sube
+			    {
+			      if(trk_sube == 0)
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube0_Mixing_RapAsym_2->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			      else
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube1_Mixing_RapAsym_2->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			    }
 			}
 		      else if(Deta_ldsldJet > 1.0) // higher rapidity
 			{
 			  ldjtTRkCorr_RapAsym_3++;
-						  
+
+			  if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			    {
+			      if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_3++;}
+			      else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_3++;}
+			    }
+			  
 			  // leading jet -trk
 			  hldJet_Trk_Mixing_RapAsym_3->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 			  
 			  // subleading jet -trk
 			  hsldJet_Trk_Mixing_RapAsym_3->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
+
+			  if(do_sube_rcjetgntrk) // for sube
+			    {
+			      if(trk_sube == 0)
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube0_Mixing_RapAsym_3->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			      else
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube1_Mixing_RapAsym_3->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			    }
 			}
 		      if((ldJet_eta)*(sldJet_eta) > 0) // same hemisphere 
 			{
 			  ldjtTRkCorr_RapAsym_sh++;
-						  
+			  
+			  if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			    {
+			      if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_sh++;}
+			      else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_sh++;}
+			    }
+			  
 			  // leading jet -trk
 			  hldJet_Trk_Mixing_RapAsym_sh->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 			  
 			  // subleading jet -trk
 			  hsldJet_Trk_Mixing_RapAsym_sh->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
-			  
+
+			  if(do_sube_rcjetgntrk) // for sube
+			    {
+			      if(trk_sube == 0)
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube0_Mixing_RapAsym_sh->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			      else
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube1_Mixing_RapAsym_sh->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			    }
 			}
 		      else if((ldJet_eta)*(sldJet_eta) < 0) // opposite hemisphere
 			{
 			  ldjtTRkCorr_RapAsym_oh++;
-			  
+
+			  if(do_sube_rcjetgntrk) // for reco jet gen trk sube
+			    {
+			      if(trk_sube == 0){rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_oh++;}
+			      else {rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_oh++;}
+			    }
+						  
 			  // leading jet -trk
 			  hldJet_Trk_Mixing_RapAsym_oh->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 			  
 			  // subleading jet -trk
 			  hsldJet_Trk_Mixing_RapAsym_oh->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
+			  
+			  if(do_sube_rcjetgntrk) // for sube
+			    {
+			      if(trk_sube == 0)
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube0_Mixing_RapAsym_oh->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			      else
+				{
+				  // leading reco jet - gentrk
+				  hldJet_sube1_Mixing_RapAsym_oh->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
+				}
+			    }
 			}
 		    }
 		} // for reco/data
@@ -1189,30 +1507,63 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 	  if(isrc)
 	    {
 	      if(ldjtTRkCorr > 0){hldsld_Jet_pair_Mixing->Fill(jet_pair, (evtw*ldJetW));}
-	      
+	      if(do_sube_rcjetgntrk) // for sube
+		{
+		  if(rcJet_gnTrk_sube0_ldjtTRkCorr > 0){hldsld_Jet_pair_sube0_Mixing->Fill(jet_pair, (evtw*ldJetW));}
+		  if(rcJet_gnTrk_sube1_ldjtTRkCorr > 0){hldsld_Jet_pair_sube1_Mixing->Fill(jet_pair, (evtw*ldJetW));}
+		}
 	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
 		{
 		  if(ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_Mixing_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
-		  
+		  if(do_sube_rcjetgntrk) // for sube
+		    {
+		      if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube0_Mixing_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
+		      if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube1_Mixing_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
+		    }
 		  if(Deta_ldsldJet < 0.5) // mid rapidity
 		    {
 		      if(ldjtTRkCorr_RapAsym_1 > 0){hldsld_Jet_pair_Mixing_RapAsym_1->Fill(jet_pair, (evtw*ldJetW));}
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube0_Mixing_RapAsym_1->Fill(jet_pair, (evtw*ldJetW));}
+			  if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube1_Mixing_RapAsym_1->Fill(jet_pair, (evtw*ldJetW));}
+			}
 		    }
 		  else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) // intermediate rapidity
 		    {
 		      if(ldjtTRkCorr_RapAsym_2 > 0){hldsld_Jet_pair_Mixing_RapAsym_2->Fill(jet_pair, (evtw*ldJetW));}
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube0_Mixing_RapAsym_2->Fill(jet_pair, (evtw*ldJetW));}
+			  if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube1_Mixing_RapAsym_2->Fill(jet_pair, (evtw*ldJetW));}
+			}
 		    }
 		  else if(Deta_ldsldJet > 1.0) // higher rapidity
 		    {
 		      if(ldjtTRkCorr_RapAsym_3 > 0){hldsld_Jet_pair_Mixing_RapAsym_3->Fill(jet_pair, (evtw*ldJetW));}
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym_3 > 0){hldsld_Jet_pair_sube0_Mixing_RapAsym_3->Fill(jet_pair, (evtw*ldJetW));}
+			  if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym_3 > 0){hldsld_Jet_pair_sube1_Mixing_RapAsym_3->Fill(jet_pair, (evtw*ldJetW));}
+			}
 		    }
 		  if((ldJet_eta)*(sldJet_eta) > 0) // same hemisphere
 		    {
 		      if(ldjtTRkCorr_RapAsym_sh > 0){hldsld_Jet_pair_Mixing_RapAsym_sh->Fill(jet_pair, (evtw*ldJetW));}
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube0_Mixing_RapAsym_sh->Fill(jet_pair, (evtw*ldJetW));}
+			  if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube1_Mixing_RapAsym_sh->Fill(jet_pair, (evtw*ldJetW));}
+			}
 		    }
 		  else if((ldJet_eta)*(sldJet_eta) < 0) // opposite hemisphere
 		    {
 		      if(ldjtTRkCorr_RapAsym_oh > 0){hldsld_Jet_pair_Mixing_RapAsym_oh->Fill(jet_pair, (evtw*ldJetW));}
+		      if(do_sube_rcjetgntrk) // for sube
+			{
+			  if(rcJet_gnTrk_sube0_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube0_Mixing_RapAsym_oh->Fill(jet_pair, (evtw*ldJetW));}
+			  if(rcJet_gnTrk_sube1_ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_sube1_Mixing_RapAsym_oh->Fill(jet_pair, (evtw*ldJetW));}
+			}
 		    }
 		}
 	    }
@@ -1291,7 +1642,7 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 }// function loop
 
 
-void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const std::vector<int>& HiBin_vec_MB_1D, const std::vector<int>& HiBinValue_vec_MB_1D, const std::vector<double>& Vertexz_vec_MB_1D, const std::vector<Long64_t>& Evtno_vec_MB_1D, const std::vector<int>& EvtCount_vec_MB_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_MB_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_MB_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_MB_2D, const bool& isrc, const bool& do_sube)
+void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const std::vector<int>& HiBin_vec_MB_1D, const std::vector<int>& HiBinValue_vec_MB_1D, const std::vector<double>& Vertexz_vec_MB_1D, const std::vector<Long64_t>& Evtno_vec_MB_1D, const std::vector<int>& EvtCount_vec_MB_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_MB_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_MB_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_MB_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk)
 {
   std::cout<<endl;
 
@@ -1379,7 +1730,7 @@ void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const s
 	  int ntrk_j = Filtered_Trk_pT_vec_MB_2D[EventCountID].size();
 	  Long64_t evtno_j = Evtno_vec_MB_1D[EventCountID];
 	  
-	  //if((fabs(vz - vz_j) < Dvz_cut) && (ctbin == ctbin_j) && (fabs(centbin - centbin_j) < Dhibin_cut) && (evtno != evtno_j) && (fabs(ntrk - ntrk_j) < Dntrk_cut))
+	  //if((fabs(vz - vz_j) < Dvz_cut) && (ctbin == ctbin_j) && (fabs(centbin - centbin_j) <= Dhibin_cut) && (evtno != evtno_j) && (fabs(ntrk - ntrk_j) <= Dntrk_cut))
 	  if((fabs(vz - vz_j) <= Dvz_cut) && (ctbin == ctbin_j) && (fabs(centbin - centbin_j) <= Dhibin_cut) && (evtno != evtno_j))
 	    {
 	      SelectMBEventCountIDForMixing.push_back(EventCountID); // push_back the selected event counts for mixing

@@ -54,6 +54,7 @@ float subleading_pT_min_cut = 90.0; // subleaading jet min pt cut
 float subleading_pT_max_cut = 5020.0; // subleaading jet max pt cut
 
 float leading_subleading_deltaphi_min = (5./6.)*TMath::Pi(); // leading subleading min Dphi cut
+//float leading_subleading_deltaphi_min = 0.5*TMath::Pi(); // leading subleading min Dphi cut
 
 //~~~~~~~~~~~~~~~~~~~~~~JET Trigger~~~~~~~~~~~~~~~~~~~~~~~~~
 bool is_JetTrigger = false;
@@ -161,10 +162,10 @@ int nBins_dphi = 48;
 //=========For Mixing====================================
 TString inputFileMC_MB  = "Data_MC_txtFiles/PbPbMC2018_minBiasHydjetMegaSkims.txt";
 TString inputFileData_MB  = "Data_MC_txtFiles/PbPbData2018_minBiasMegaSkims.txt";
-int bkgFactor = 5;
-double Dvz_cut = 1.;
-int Dhibin_cut = 2;
-int Dntrk_cut = 10;
+int bkgFactor = 30;
+double Dvz_cut = 0.5;
+int Dhibin_cut = 1;
+int Dntrk_cut = 5;
 bool isRcJetGnTrk = false; // Only true for MC, when you want cross corr (reco jet gen tracks and vice varsa)
 bool isMBEventsMixing = false; // Only for PbPb, true when you want to Mix with MB events, both for MC and data
 
