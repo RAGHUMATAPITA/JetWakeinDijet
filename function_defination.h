@@ -142,7 +142,7 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 	  int trk_sube = Filtered_TrkSube_vec_2D[ievt][itrk];
 	  int trk_ptbin = hTrkpTBin->FindBin(trk_pt) - 1;
 
-	  if(trk_pt < trk_pt_min_cut || trk_pt > trk_pt_max_cut || fabs(trk_eta) > trk_eta_cut || trk_chg == 0) {std::cout<<"Tracks are out of  pT and eta cuts, please check"<<std::endl;}
+	  if(trk_pt < trk_pt_min_cut || trk_pt > trk_pt_max_cut || fabs(trk_eta) > trk_eta_cut || trk_chg == 0) {std::cout<<trk_pt<<"  "<<trk_eta<<std::endl;std::cout<<"Tracks are out of  pT and eta cuts, please check"<<std::endl;}
 
 	  if(!isrc)
 	    {
@@ -560,6 +560,8 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 		      // subleading jet -trk
 		      hsldGenJet_Trk_Signal_RapAsym_3->Fill(sldjet_trk_signal, (evtw*sldJetW*trk_w));
 
+		      //std::cout<<"evtw*sldJetW*trk_w: "<<evtw<<"  "<<ldJetW<<"  "<<trk_w<<std::endl;
+		      
 		      if(do_sube) // for sube
 			{
 			  if(trk_sube == 0)

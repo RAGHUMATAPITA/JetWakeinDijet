@@ -65,9 +65,9 @@ THnSparseD * hJet_ldGenpT_Eta_Phi_ctbin_flavour_pTCut_W = new THnSparseD("hJet_l
 THnSparseD * hJet_sldGenpT_Eta_Phi_ctbin_flavour_pTCut_W = new THnSparseD("hJet_sldGenpT_Eta_Phi_ctbin_flavour_pTCut_W", "", 5, bins4D_jet, xmin4D_jet, xmax4D_jet);
 
 // for track histograms
-int    bins4D_trk[4]   =   { 50  , 25   , 32           , NCentbin         };
+int    bins4D_trk[4]   =   { 20  , 25   , 32           , NCentbin         };
 double xmin4D_trk[4]   =   { 0.  , -2.5 , -TMath::Pi() , 0.               };
-double xmax4D_trk[4]   =   { 20. ,  2.5 , TMath::Pi()  , (double)NCentbin };
+double xmax4D_trk[4]   =   { 4. ,  2.5 , TMath::Pi()  , (double)NCentbin };
 
 // reco/data
 THnSparseD * hTrk_pT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTrk_pT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
@@ -75,6 +75,12 @@ THnSparseD * hTrk_pT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTrk_pT_Eta_Phi_ctb
 THnSparseD * hTrk_CorrpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTrk_CorrpT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
 // gen
 THnSparseD * hTrk_GenpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTrk_GenpT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
+
+// gn jet rc trk
+THnSparseD * hGnJetRcTrk_CorrpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hGnJetRcTrk_CorrpT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
+// rc jet gn trk
+THnSparseD * hRcJetGnTrk_GenpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hRcJetGnTrk_GenpT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
+
 
 // all sube
 THnSparseD * hTrk_Signal_GenpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTrk_Signal_GenpT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
@@ -477,6 +483,9 @@ void sumw2()
   // gen Trk histograms
   hTrk_GenpT_Eta_Phi_ctbin_pTCut_W->Sumw2();
 
+  hGnJetRcTrk_CorrpT_Eta_Phi_ctbin_pTCut_W->Sumw2();
+  hRcJetGnTrk_GenpT_Eta_Phi_ctbin_pTCut_W->Sumw2();
+  
   // all sube
   hTrk_Signal_GenpT_Eta_Phi_ctbin_pTCut_W->Sumw2();
   hTrk_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W->Sumw2();
@@ -869,22 +878,21 @@ void Write_Jet_QA_hist(const bool& is_MC, const bool& is_JES_JER)
 
 void Write_Trk_QA_hist(const bool& is_MC)
 {
-  /*
+
   // reco/data Trk histograms
   hTrk_pT_Eta_Phi_ctbin_pTCut_W->Write();
   //corr pT
   hTrk_CorrpT_Eta_Phi_ctbin_pTCut_W->Write();
   
-  hTrk_Signal_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
-  hTrk_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
-  */
+  //hTrk_Signal_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
+  //hTrk_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
+
   
   if(is_MC)
     {
-      /*
+
       // gen Trk histograms
       hTrk_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
-      */
 
       /*
       // for sube = 0
@@ -895,6 +903,10 @@ void Write_Trk_QA_hist(const bool& is_MC)
       hTrk_sube1_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
       */
       
+      hGnJetRcTrk_CorrpT_Eta_Phi_ctbin_pTCut_W->Write();
+      hRcJetGnTrk_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
+
+      /*
       // ntrks gen sube0 histograms
       hntrk_gen_sube0_Signal_0->Write();
       hntrk_gen_sube0_Signal_1->Write();
@@ -908,8 +920,10 @@ void Write_Trk_QA_hist(const bool& is_MC)
       hntrk_gen_sube1_Signal_2->Write();
       hntrk_gen_sube1_Signal_3->Write();
       hntrk_gen_sube1_Signal_4->Write();
+      */
     }
-  
+
+  /*
   // ntrks histograms
   hntrk_Signal_0->Write();
   hntrk_Signal_1->Write();
@@ -940,6 +954,7 @@ void Write_Trk_QA_hist(const bool& is_MC)
   hvtxz_Signal_2->Write();
   hvtxz_Signal_3->Write();
   hvtxz_Signal_4->Write();
+  */
 }
 
 void Write_Jet_Trk_Corr_hist(const bool& is_MC, const bool& isRcJetGnTrk)

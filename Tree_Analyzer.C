@@ -44,9 +44,12 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   TH2F* htrk_eff_pp;
   TH2F* htrk_fak_pp;
   TH2F* htrk_sec_pp;
+  TH2F* htrk_mul_pp;
 
   TH3F* htrk_eff_PbPb;
   TH3F* htrk_fak_PbPb;
+  TH3F* htrk_sec_PbPb;
+  TH3F* htrk_mul_PbPb;
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~:Setting for pp ref data and MC:~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   TString colliding_system_filename;
@@ -164,7 +167,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 	  is_JES_JER = false;
 	  is_Gen_Reco_Correlation = false;
 	  is_JER_Correction = false;
-	  isRcJetGnTrk = true; 
+	  isRcJetGnTrk = false; 
 	}
       
       //if(!is_MC)
@@ -661,8 +664,8 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   int evtcount_Reco = 0; // required for mixing
   int evtcount_Gen = 0; // required for mixing
 
-  //for(int i = 0; i < nevents; i++) //event loop //start
-    for(int i = 0; i < 10000; i++) //event loop start
+  for(int i = 0; i < nevents; i++) //event loop //start
+  //for(int i = 0; i < 1000; i++) //event loop start
     {
       hlt_tree->GetEntry(i);
       
@@ -1319,7 +1322,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 			  std::vector<int> Reco_Filtered_InclTrkSube_vec_1D;               // trk sube
 
 			  double NtrkCount = 0.;
-			  
+			
 			  //start reco/data tracks loop
 			  for(int irctrk = 0; irctrk < ntrk; irctrk++)
 			    {
@@ -1347,15 +1350,15 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 			      
 			      if(!trk_hp) continue;
 			      if(trk_chg == 0) continue;
-			      if(fabs(trk_pterr/trk_pt) > trk_pt_resolution_cut) continue;
-			      if(fabs(trk_dxy/trk_dxyerr) > trk_dca_xy_cut) continue;
-			      if(fabs(trk_dz/trk_dzerr) > trk_dca_z_cut) continue;
+			      if(fabs(trk_pterr/trk_pt) >= trk_pt_resolution_cut) continue;
+			      if(fabs(trk_dxy/trk_dxyerr) >= trk_dca_xy_cut) continue;
+			      if(fabs(trk_dz/trk_dzerr) >= trk_dca_z_cut) continue;
 			      if(colliding_system == "PbPb")
 				{
 				  if(trk_nhits < nhits) continue;
 				  if(trk_algo == 6 && trk_mva < 0.98) continue;
-				  if(trk_chi2/trk_ndf/trk_nlayers >= chi2_ndf_nlayer_cut) continue;
-				  if(trk_pt > 20 && fabs(ETCalo/trk_pt) < calo_matching) continue;
+				  if(trk_chi2/((float)trk_ndf)/((float)trk_nlayers) >= chi2_ndf_nlayer_cut) continue;
+				  if(trk_pt > 20 && fabs(ETCalo/trk_pt) <= calo_matching) continue;
 				}
 			      if(trk_pt <= trk_pt_min_cut || trk_pt >= trk_pt_max_cut) continue;
 			      //if(trk_pt < trk_pt_min_cut) continue;
@@ -1370,10 +1373,10 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				{
 				  if(is_MC)
 				    {
-				      //trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin+10));
-				      //trkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta, trk_pt, centbin+10));
-				      trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin));
-                                      trkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta, trk_pt, centbin));
+				      trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin+10));
+				      trkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta, trk_pt, centbin+10));
+				      //trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin));
+                                      //trkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta, trk_pt, centbin));
 				    }
 				  else
 				    {
@@ -1383,7 +1386,8 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				}
 			      else if(colliding_system == "pp")
 				{
-				  trkeff = (htrk_eff_pp->GetBinContent(htrk_eff_pp->FindBin(trk_eta, trk_pt)))*0.979; //0.979 is scale factor from D mesons
+				  //trkeff = (htrk_eff_pp->GetBinContent(htrk_eff_pp->FindBin(trk_eta, trk_pt)))*0.979; //0.979 is scale factor from D mesons
+				  trkeff = (htrk_eff_pp->GetBinContent(htrk_eff_pp->FindBin(trk_eta, trk_pt)));
 				  trkfak = htrk_fak_pp->GetBinContent(htrk_fak_pp->FindBin(trk_eta, trk_pt));
 				  trksec = htrk_sec_pp->GetBinContent(htrk_sec_pp->FindBin(trk_eta, trk_pt));
 				}
@@ -1473,6 +1477,9 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				  RecoGen_Filtered_InclTrkW_vec_1D.push_back(recogentrk_wt);
 				  RecoGen_Filtered_InclTrkCharge_vec_1D.push_back(recogentrk_chg);
 				  RecoGen_Filtered_InclTrkSube_vec_1D.push_back(recogentrk_sube);
+
+				  double RcjetGnTrk_pT_Eta_Phi_ctbin[4] = {recogentrk_pt, recogentrk_eta, recogentrk_phi, (double)ctbin};
+				  hRcJetGnTrk_GenpT_Eta_Phi_ctbin_pTCut_W->Fill(RcjetGnTrk_pT_Eta_Phi_ctbin, 1.);
 				}
 			      // filled gen 2D trk vector
 			      RecoGen_Filtered_InclTrk_pT_vec_2D.push_back(RecoGen_Filtered_InclTrk_pT_vec_1D);
@@ -1767,6 +1774,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				      float genrecotrk_dz = (float)trkdcaz[ignrctrk];
 				      float genrecotrk_dzerr = (float)trkdcazerr[ignrctrk];
 				      float ETCalo = (((float)pfEcal[ignrctrk] + (float)pfHcal[ignrctrk])/(TMath::CosH(genrecotrk_eta)));
+
 				      int genrecotrk_algo; float genrecotrk_mva;
 				      if(colliding_system == "PbPb")
 					{
@@ -1776,20 +1784,23 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				      
 				      if(!genrecotrk_hp) continue;
 				      if(genrecotrk_chg == 0) continue;
-				      if(fabs(genrecotrk_pterr/genrecotrk_pt) > trk_pt_resolution_cut) continue;
-				      if(fabs(genrecotrk_dxy/genrecotrk_dxyerr) > trk_dca_xy_cut) continue;
-				      if(fabs(genrecotrk_dz/genrecotrk_dzerr) > trk_dca_z_cut) continue;
+				      if(fabs(genrecotrk_pterr/genrecotrk_pt) >= trk_pt_resolution_cut) continue;
+				      if(fabs(genrecotrk_dxy/genrecotrk_dxyerr) >= trk_dca_xy_cut) continue;
+				      if(fabs(genrecotrk_dz/genrecotrk_dzerr) >= trk_dca_z_cut) continue;
 				      if(colliding_system == "PbPb")
 					{
 					  if(genrecotrk_nhits < nhits) continue;
 					  if(genrecotrk_algo == 6 && genrecotrk_mva < 0.98) continue;
-					  if(genrecotrk_chi2/genrecotrk_ndf/genrecotrk_nlayers >= chi2_ndf_nlayer_cut) continue;
-					  if(genrecotrk_pt > 20 && fabs(ETCalo/genrecotrk_pt) < calo_matching) continue;
+					  if(genrecotrk_chi2/((float)genrecotrk_ndf)/((float)genrecotrk_nlayers) >= chi2_ndf_nlayer_cut) continue;
+					  if(genrecotrk_pt > 20. && fabs(ETCalo/genrecotrk_pt) <= calo_matching) continue;
 					}
 				      if(genrecotrk_pt <= trk_pt_min_cut || genrecotrk_pt >= trk_pt_max_cut) continue;
 				      //if(genrecotrk_pt < trk_pt_min_cut) continue;
 				      if(fabs(genrecotrk_eta) >= trk_eta_cut) continue;
-				      
+
+				      //std::cout<<genrecotrk_pt<<" "<<genrecotrk_eta<<"  "<<genrecotrk_phi<<"  "<<genrecotrk_hp<<"  "<<genrecotrk_chg<<"  "<<genrecotrk_nhits<<"  "<<genrecotrk_chi2/((float)genrecotrk_ndf)/((float)genrecotrk_nlayers)<<"  "<<fabs(genrecotrk_pterr/genrecotrk_pt)<<"  "<<fabs(genrecotrk_dxy/genrecotrk_dxyerr)<<"  "<<fabs(genrecotrk_dz/genrecotrk_dzerr)<<std::endl;
+				      //std::cout<<genrecotrk_pt<<" "<<genrecotrk_eta<<"  "<<genrecotrk_phi<<"  "<<genrecotrk_hp<<"  "<<genrecotrk_chg<<"  "<<genrecotrk_nhits<<"  "<<genrecotrk_chi2<<" "<<genrecotrk_ndf<<"  "<<genrecotrk_nlayers<<"  "<<genrecotrk_pterr<<"  "<<genrecotrk_dxy<<"  "<<genrecotrk_dxyerr<<"  "<<genrecotrk_dz<<"  "<<genrecotrk_dzerr<<"  "<<ETCalo<<std::endl;
+
 				      double genrecotrkeff = 1.;
 				      double genrecotrkfak = 1.;
 				      double genrecotrksec = 1.;
@@ -1799,10 +1810,10 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 					{
 					  if(is_MC)
 					    {
-					      //genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+10));
-					      //genrecotrkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+10));
-					      genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin));
-                                              genrecotrkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin));
+					      genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+10));
+					      genrecotrkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+10));
+					      //genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin));
+                                              //genrecotrkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin));
 					    }
 					  else
 					    {
@@ -1812,7 +1823,8 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 					}
 				      else if(colliding_system == "pp")
 					{
-					  genrecotrkeff = (htrk_eff_pp->GetBinContent(htrk_eff_pp->FindBin(genrecotrk_eta, genrecotrk_pt)))*0.979; //0.979 is scale factor from D mesons
+					  //genrecotrkeff = (htrk_eff_pp->GetBinContent(htrk_eff_pp->FindBin(genrecotrk_eta, genrecotrk_pt)))*0.979; //0.979 is scale factor from D mesons
+					  genrecotrkeff = (htrk_eff_pp->GetBinContent(htrk_eff_pp->FindBin(genrecotrk_eta, genrecotrk_pt))); 
 					  genrecotrkfak = htrk_fak_pp->GetBinContent(htrk_fak_pp->FindBin(genrecotrk_eta, genrecotrk_pt));
 					  genrecotrksec = htrk_sec_pp->GetBinContent(htrk_sec_pp->FindBin(genrecotrk_eta, genrecotrk_pt));
 					}
@@ -1840,6 +1852,9 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				      GenReco_Filtered_InclTrkW_vec_1D.push_back(genrecotrk_wt);
 				      GenReco_Filtered_InclTrkCharge_vec_1D.push_back(genrecotrk_chg);
 				      GenReco_Filtered_InclTrkSube_vec_1D.push_back(1);
+
+				      double GnjetRcTrk_pT_Eta_Phi_ctbin[4] = {genrecotrk_pt, genrecotrk_eta, genrecotrk_phi, (double)ctbin};
+				      hGnJetRcTrk_CorrpT_Eta_Phi_ctbin_pTCut_W->Fill(GnjetRcTrk_pT_Eta_Phi_ctbin, genrecotrk_wt);
 				    } // reco track loop end
 				  // filled reco/data 2D trk vector
 				  GenReco_Filtered_InclTrk_pT_vec_2D.push_back(GenReco_Filtered_InclTrk_pT_vec_1D);
@@ -2110,6 +2125,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //~~~~~~~~~calling function for jet tracks signal and mixing correlation~~~~~~~~~~~~~
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   if(!isRcJetGnTrk) // for gen jets gen tracks and reco jets reco tracks
     {
       std::cout<<"Correlation will be done between reco jets and reco tracks and vice varsa"<<std::endl;
@@ -2141,7 +2157,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 	  std::cout<<endl;
 	  Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
 	}
-
+            
       // for gen
       if(is_MC)
 	{
@@ -2183,11 +2199,10 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   else if(isRcJetGnTrk) // for gen jets reco tracks and reco jets gen tracks
     {
       std::cout<<"Correlation will be done between reco jets and gen tracks and vice varsa"<<std::endl;
-      
       // signal
       // for reco/data
       Jet_Track_signal_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, true); // true for reco, false for sube, true for rcjet gen trk sube
-      
+
       // mixing
       // for reco/data
       if(colliding_system == "PbPb")
@@ -2211,13 +2226,13 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 	  std::cout<<endl;
 	  Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
 	}
-      
+
       // for gen
       if(is_MC)
 	{
 	  // signal
 	  Jet_Track_signal_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, false, false, false); // false for reco, false for sube, false for rcjet gen trk sube
-	  
+
 	  // mixing
 	  if(colliding_system == "PbPb")
             {
@@ -2428,16 +2443,14 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   Write_Jet_QA_hist(is_MC, is_JES_JER);
   */
 
-  /*
   fout->mkdir("Trk_QA_Hist");
   fout->cd("Trk_QA_Hist");
   Write_Trk_QA_hist(is_MC);
-  */
   
   fout->mkdir("Jet_Trk_Corr_Hist");
   fout->cd("Jet_Trk_Corr_Hist");
   Write_Jet_Trk_Corr_hist(is_MC, isRcJetGnTrk);
-    
+  
   fout->Write();
   fout->Close();
   delete fout;
