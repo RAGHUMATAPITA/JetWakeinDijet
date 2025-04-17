@@ -79,7 +79,7 @@ void find_leading_jets(double pt, double eta, double phi, int index, double refp
     }
 }
 
-void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk)
+void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk, const bool& isFlip)
 {
   std::cout<<endl;
   if(Evtw_vec_1D.size() != Filtered_ldjet_vec_1D.size()){std::cout<<"event numbers are not same, pleaes check"<<std::endl;}
@@ -130,6 +130,9 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 
       double TotalNtrk = 0., TotalNtrk_gen_sube0 = 0., TotalNtrk_gen_sube1 = 0.;
       double TotalNtrkOffline = 0.;
+
+      double TotalNtrk_RapAsymm = 0., TotalNtrk_RapAsymm_1 = 0., TotalNtrk_RapAsymm_2 = 0., TotalNtrk_RapAsymm_3 = 0.;
+      double TotalNtrk_Gen_RapAsymm = 0., TotalNtrk_Gen_RapAsymm_1 = 0., TotalNtrk_Gen_RapAsymm_2 = 0., TotalNtrk_Gen_RapAsymm_3 = 0.;
       
       for(int itrk = 0; itrk < Filtered_Trk_pT_vec_2D[ievt].size(); itrk++)
 	{
@@ -162,6 +165,16 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 		      TotalNtrk_gen_sube1 += trk_w;
 		    }
 		}
+
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
+		{
+		  double GenTrk_pT_Eta_ctbin[3] = {trk_pt, trk_eta, (double)ctbin};
+		  hTrk_Signal_GenpT_Eta_ctbin_RapAsymm->Fill(GenTrk_pT_Eta_ctbin, trk_w);
+		  TotalNtrk_Gen_RapAsymm += trk_w;
+		  if(Deta_ldsldJet < 0.5) {TotalNtrk_Gen_RapAsymm_1 += trk_w; hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_1->Fill(GenTrk_pT_Eta_ctbin, trk_w);}
+		  else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) {TotalNtrk_Gen_RapAsymm_2 += trk_w; hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_2->Fill(GenTrk_pT_Eta_ctbin, trk_w);}
+		  else if(Deta_ldsldJet > 1.0) {TotalNtrk_Gen_RapAsymm_3 += trk_w; hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_3->Fill(GenTrk_pT_Eta_ctbin, trk_w);}
+		}
 	    }
 
 	  if(isrc)
@@ -169,10 +182,21 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 	      //if(trk_ptbin == 0 || trk_ptbin == 1) TotalNtrk += trk_w; // sum MB trks
 	      TotalNtrk += trk_w;
 	      TotalNtrkOffline++;
+
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
+                {
+		  double Trk_pT_Eta_ctbin[3] = {trk_pt, trk_eta, (double)ctbin};
+                  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm->Fill(Trk_pT_Eta_ctbin, trk_w);
+		  TotalNtrk_RapAsymm += trk_w;
+                  if(Deta_ldsldJet < 0.5) {TotalNtrk_RapAsymm_1 += trk_w; hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_1->Fill(Trk_pT_Eta_ctbin, trk_w);}
+                  else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) {TotalNtrk_RapAsymm_2 += trk_w; hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_2->Fill(Trk_pT_Eta_ctbin, trk_w);}
+                  else if(Deta_ldsldJet > 1.0) {TotalNtrk_RapAsymm_3 += trk_w; hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_3->Fill(Trk_pT_Eta_ctbin, trk_w);}
+                }
 	    }
 	  
 	  // for leading jet - trk
-	  double Deta_ldjet_trk = trk_eta - ldJet_eta;
+	  //double Deta_ldjet_trk = trk_eta - ldJet_eta;
+	  double Deta_ldjet_trk = isFlip ? -(trk_eta - ldJet_eta) : (trk_eta - ldJet_eta);
 	  double Dphi_ldjet_trk = trk_phi - ldJet_phi;
 
 	  if(Dphi_ldjet_trk > 1.5*TMath::Pi())
@@ -185,7 +209,8 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 	    }
 	  
 	  // for subleading jet - trk
-	  double Deta_sldjet_trk = trk_eta - sldJet_eta;
+	  //double Deta_sldjet_trk = trk_eta - sldJet_eta;
+	  double Deta_sldjet_trk = isFlip ? -(trk_eta - sldJet_eta) : (trk_eta - sldJet_eta);
 	  double Dphi_sldjet_trk = trk_phi - sldJet_phi;
 
 	  if(Dphi_sldjet_trk > 1.5*TMath::Pi())
@@ -233,7 +258,8 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 		    }
 		}
 
-	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		{
 		  ldjtTRkCorr_RapAsym++;
 
@@ -447,7 +473,8 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 		    }
 		}
 	      
-	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		{
 		  gn_ldjtTRkCorr_RapAsym++;
 		  if(do_sube) // for sube
@@ -674,6 +701,15 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
           else if(ctbin == 2) hvtxz_Signal_2->Fill(vz, evtw);
           else if(ctbin == 3) hvtxz_Signal_3->Fill(vz, evtw);
           else if(ctbin == 4) hvtxz_Signal_4->Fill(vz, evtw);
+
+	  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
+	    {
+	      double Ntrk_RapAsymm[2] = {TotalNtrk_RapAsymm, (double)ctbin};
+	      hnTrk_Signal_RapAsymm->Fill(Ntrk_RapAsymm);
+	      if(Deta_ldsldJet < 0.5) {double Ntrk_RapAsymm_1[2] = {TotalNtrk_RapAsymm_1, (double)ctbin}; hnTrk_Signal_RapAsymm_1->Fill(Ntrk_RapAsymm_1);}
+	      else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) {double Ntrk_RapAsymm_2[2] = {TotalNtrk_RapAsymm_2, (double)ctbin}; hnTrk_Signal_RapAsymm_2->Fill(Ntrk_RapAsymm_2);}
+	      else if(Deta_ldsldJet > 1.0) {double Ntrk_RapAsymm_3[2] = {TotalNtrk_RapAsymm_3, (double)ctbin}; hnTrk_Signal_RapAsymm_3->Fill(Ntrk_RapAsymm_3);}
+	    }
 	}
       else if(!isrc)
 	{
@@ -705,6 +741,15 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
                   hntrk_gen_sube1_Signal_4->Fill(TotalNtrk_gen_sube1, evtw);
 		}
 	    }
+
+	  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
+            {
+              double Ntrk_Gen_RapAsymm[2] = {TotalNtrk_Gen_RapAsymm, (double)ctbin};
+              hnTrk_Signal_Gen_RapAsymm->Fill(Ntrk_Gen_RapAsymm);
+	      if(Deta_ldsldJet < 0.5) {double Ntrk_Gen_RapAsymm_1[2] = {TotalNtrk_Gen_RapAsymm_1, (double)ctbin}; hnTrk_Signal_Gen_RapAsymm_1->Fill(Ntrk_Gen_RapAsymm_1);}
+              else if(Deta_ldsldJet > 0.5 && Deta_ldsldJet < 1.0) {double Ntrk_Gen_RapAsymm_2[2] = {TotalNtrk_Gen_RapAsymm_2, (double)ctbin}; hnTrk_Signal_Gen_RapAsymm_2->Fill(Ntrk_Gen_RapAsymm_2);}
+              else if(Deta_ldsldJet > 1.0) {double Ntrk_Gen_RapAsymm_3[2] = {TotalNtrk_Gen_RapAsymm_3, (double)ctbin}; hnTrk_Signal_Gen_RapAsymm_3->Fill(Ntrk_Gen_RapAsymm_3);}
+            }
 	}
     
       // for jet pair
@@ -717,7 +762,8 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 	      if(rcJet_gnTrk_sube0_ldjtTRkCorr > 0){hldsld_Jet_pair_sube0_Signal->Fill(jet_pair, (evtw*ldJetW));}
 	      if(rcJet_gnTrk_sube1_ldjtTRkCorr > 0){hldsld_Jet_pair_sube1_Signal->Fill(jet_pair, (evtw*ldJetW));}
 	    }
-	  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry                                                                             
+	  //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 	    {
 	      if(ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_Signal_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
 	      if(do_sube_rcjetgntrk) // for sube
@@ -780,7 +826,8 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
 	      if(gn_sube0_ldjtTRkCorr > 0){hldsld_GenJet_pair_sube0_Signal->Fill(jet_pair, (evtw*ldJetW));}
 	      if(gn_sube1_ldjtTRkCorr > 0){hldsld_GenJet_pair_sube1_Signal->Fill(jet_pair, (evtw*ldJetW));} 
 	    }
-	  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry                                                                             
+	  //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 	    {
 	      if(gn_ldjtTRkCorr_RapAsym > 0){hldsld_GenJet_pair_Signal_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
 	      if(do_sube) // for sube
@@ -845,7 +892,7 @@ void Jet_Track_signal_corr_ldsld(const TString& colliding_system, const std::vec
   std::cout<<endl;
 }// function loop
 
-void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<int>& EvtCount_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk)
+void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<int>& EvtCount_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk, const bool& isFlip)
 {
   std::cout<<endl;
 
@@ -919,10 +966,12 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
       std::shuffle(shuffled_EvtCount_vec_1D.begin(), shuffled_EvtCount_vec_1D.end(), g);
 
       for(int ievt_j = 0; ievt_j < shuffled_EvtCount_vec_1D.size(); ievt_j++) // loop over events to select desire mix events
+	//for(int ievt_j = ievt + 1; ievt_j < EvtCount_vec_1D.size(); ievt_j++) // loop over events to select desire mix events
 	{
 	  if(SelectMBEventCountIDForMixing.size() >= bkgFactor) break;  // Stop early if enough events are found
 	  
 	  int EventCountID = shuffled_EvtCount_vec_1D[ievt_j];
+	  //int EventCountID = EvtCount_vec_1D[ievt_j];
 	  
 	  int ctbin_j = HiBin_vec_1D[EventCountID];
           int centbin_j = HiBinValue_vec_1D[EventCountID];
@@ -1008,7 +1057,8 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 		  TotalNtrk += trk_w;
 		}
 	      // for leading jet - trk
-	      double Deta_ldjet_trk = trk_eta - ldJet_eta;
+	      //double Deta_ldjet_trk = trk_eta - ldJet_eta;
+	      double Deta_ldjet_trk = isFlip ? -(trk_eta - ldJet_eta) : (trk_eta - ldJet_eta);
 	      double Dphi_ldjet_trk = trk_phi - ldJet_phi;
 	      
 	      if(Dphi_ldjet_trk > 1.5*TMath::Pi())
@@ -1021,7 +1071,8 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 		}
 	      
 	      // for subleading jet - trk
-	      double Deta_sldjet_trk = trk_eta - sldJet_eta;
+	      //double Deta_sldjet_trk = trk_eta - sldJet_eta;
+	      double Deta_sldjet_trk = isFlip ? -(trk_eta - sldJet_eta) : (trk_eta - sldJet_eta);
 	      double Dphi_sldjet_trk = trk_phi - sldJet_phi;
 	      
 	      if(Dphi_sldjet_trk > 1.5*TMath::Pi())
@@ -1068,7 +1119,8 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 			  hldJet_Trk_sube1_Mixing->Fill(ldjet_trk_mixing, (evtw*ldJetW*trk_w));
 			}
 		    }
-		  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		    {
 		      ldjtTRkCorr_RapAsym++;
 
@@ -1282,7 +1334,8 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 			}
 		    }
 		  
-		  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		    {
 		      gn_ldjtTRkCorr_RapAsym++;
 		      if(do_sube) // for sube
@@ -1514,7 +1567,8 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 		  if(rcJet_gnTrk_sube0_ldjtTRkCorr > 0){hldsld_Jet_pair_sube0_Mixing->Fill(jet_pair, (evtw*ldJetW));}
 		  if(rcJet_gnTrk_sube1_ldjtTRkCorr > 0){hldsld_Jet_pair_sube1_Mixing->Fill(jet_pair, (evtw*ldJetW));}
 		}
-	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		{
 		  if(ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_Mixing_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
 		  if(do_sube_rcjetgntrk) // for sube
@@ -1577,7 +1631,8 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 		  if(gn_sube0_ldjtTRkCorr > 0){hldsld_GenJet_pair_sube0_Mixing->Fill(jet_pair, (evtw*ldJetW));}
 		  if(gn_sube1_ldjtTRkCorr > 0){hldsld_GenJet_pair_sube1_Mixing->Fill(jet_pair, (evtw*ldJetW));} 
 		} 
-	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		{
 		  if(gn_ldjtTRkCorr_RapAsym > 0){hldsld_GenJet_pair_Mixing_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
 		  if(do_sube) // for sube
@@ -1644,7 +1699,7 @@ void Jet_Track_mixing_corr_ldsld(const TString& colliding_system, const std::vec
 }// function loop
 
 
-void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const std::vector<int>& HiBin_vec_MB_1D, const std::vector<int>& HiBinValue_vec_MB_1D, const std::vector<double>& Vertexz_vec_MB_1D, const std::vector<Long64_t>& Evtno_vec_MB_1D, const std::vector<int>& EvtCount_vec_MB_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_MB_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_MB_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_MB_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk)
+void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const std::vector<double>& Evtw_vec_1D, const std::vector<int>& HiBin_vec_1D, const std::vector<int>& HiBinValue_vec_1D, const std::vector<double>& Vertexz_vec_1D, const std::vector<Long64_t>& Evtno_vec_1D, const std::vector<TVector3>& Filtered_ldjet_vec_1D, const std::vector<int>& Filtered_ldrefpartonB_vec_1D, const std::vector<double>& Filtered_ldJetW_vec_1D, const std::vector<TVector3>& Filtered_sldjet_vec_1D, const std::vector<int>& Filtered_sldrefpartonB_vec_1D, const std::vector<double>& Filtered_sldJetW_vec_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkCharge_vec_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_2D, const std::vector<int>& HiBin_vec_MB_1D, const std::vector<int>& HiBinValue_vec_MB_1D, const std::vector<double>& Vertexz_vec_MB_1D, const std::vector<Long64_t>& Evtno_vec_MB_1D, const std::vector<int>& EvtCount_vec_MB_1D, const std::vector<std::vector<TVector3>>& Filtered_Trk_pT_vec_MB_2D, const std::vector<std::vector<double>>& Filtered_TrkW_vec_MB_2D, const std::vector<std::vector<int>>& Filtered_TrkSube_vec_MB_2D, const bool& isrc, const bool& do_sube, const bool& do_sube_rcjetgntrk, const bool& isFlip)
 {
   std::cout<<endl;
 
@@ -1784,7 +1839,8 @@ void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const s
 		}
 	      
 	      // for leading jet - trk
-	      double Deta_ldjet_trk = trk_eta - ldJet_eta;
+	      //double Deta_ldjet_trk = trk_eta - ldJet_eta;
+	      double Deta_ldjet_trk = isFlip ? -(trk_eta - ldJet_eta) : (trk_eta - ldJet_eta);
 	      double Dphi_ldjet_trk = trk_phi - ldJet_phi;
 	      
 	      if(Dphi_ldjet_trk > 1.5*TMath::Pi())
@@ -1797,7 +1853,8 @@ void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const s
 		}
 	      
 	      // for subleading jet - trk
-	      double Deta_sldjet_trk = trk_eta - sldJet_eta;
+	      //double Deta_sldjet_trk = trk_eta - sldJet_eta;
+	      double Deta_sldjet_trk = isFlip ? -(trk_eta - sldJet_eta) : (trk_eta - sldJet_eta);
 	      double Dphi_sldjet_trk = trk_phi - sldJet_phi;
 	      
 	      if(Dphi_sldjet_trk > 1.5*TMath::Pi())
@@ -1825,7 +1882,8 @@ void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const s
 		  // subleading jet -trk
 		  hsldJet_Trk_Mixing->Fill(sldjet_trk_mixing, (evtw*sldJetW*trk_w));
 
-		  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		    {
 		      ldjtTRkCorr_RapAsym++;
 		      		      
@@ -1921,7 +1979,8 @@ void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const s
 			}
 		    }
 		  
-		  if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+		  if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		    {
 		      gn_ldjtTRkCorr_RapAsym++;
 		      if(do_sube) // for sube
@@ -2140,7 +2199,8 @@ void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const s
 	    {
 	      if(ldjtTRkCorr > 0){hldsld_Jet_pair_Mixing->Fill(jet_pair, (evtw*ldJetW));}
 	      
-	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		{
 		  if(ldjtTRkCorr_RapAsym > 0){hldsld_Jet_pair_Mixing_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
 		  
@@ -2174,7 +2234,8 @@ void Jet_Track_mixing_withMB_corr_ldsld(const TString& colliding_system, const s
 		  if(gn_sube0_ldjtTRkCorr > 0){hldsld_GenJet_pair_sube0_Mixing->Fill(jet_pair, (evtw*ldJetW));}
 		  if(gn_sube1_ldjtTRkCorr > 0){hldsld_GenJet_pair_sube1_Mixing->Fill(jet_pair, (evtw*ldJetW));} 
 		} 
-	      if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      //if(ldJet_eta > sldJet_eta) // crucial for rapidity asymmetry
+	      if((!isFlip && ldJet_eta > sldJet_eta) || (isFlip && ldJet_eta < sldJet_eta))
 		{
 		  if(gn_ldjtTRkCorr_RapAsym > 0){hldsld_GenJet_pair_Mixing_RapAsym->Fill(jet_pair, (evtw*ldJetW));}
 		  if(do_sube) // for sube

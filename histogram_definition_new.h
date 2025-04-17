@@ -93,6 +93,20 @@ THnSparseD * hTrk_sube0_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTr
 THnSparseD * hTrk_sube1_Signal_GenpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTrk_sube1_Signal_GenpT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
 THnSparseD * hTrk_sube1_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W = new THnSparseD("hTrk_sube1_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W", "", 4, bins4D_trk, xmin4D_trk, xmax4D_trk);
 
+// to check multiplicity fluctuation
+int    bins4D_trkmult[3]   =   { 20  , 25  , NCentbin         };
+double xmin4D_trkmult[3]   =   { 0.  , -2.5, 0.               };
+double xmax4D_trkmult[3]   =   { 4. ,  2.5 , (double)NCentbin };
+THnSparseD* hTrk_Signal_GenpT_Eta_ctbin_RapAsymm = new THnSparseD("hTrk_Signal_GenpT_Eta_ctbin_RapAsymm", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+THnSparseD* hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_1 = new THnSparseD("hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_1", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+THnSparseD* hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_2 = new THnSparseD("hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_2", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+THnSparseD* hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_3 = new THnSparseD("hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_3", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+
+THnSparseD* hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm = new THnSparseD("hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+THnSparseD* hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_1 = new THnSparseD("hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_1", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+THnSparseD* hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_2 = new THnSparseD("hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_2", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+THnSparseD* hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_3 = new THnSparseD("hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_3", "", 3, bins4D_trkmult, xmin4D_trkmult, xmax4D_trkmult);
+
 // for ntracks histograms
 TH1D* hntrk_Signal_0 = new TH1D("hntrk_Signal_0", "", 2400, 0, 2400);
 TH1D* hntrk_Signal_1 = new TH1D("hntrk_Signal_1", "", 2400, 0, 2400);
@@ -117,6 +131,21 @@ TH1D* hntrk_Mixing_1 = new TH1D("hntrk_Mixing_1", "", 2400, 0, 2400);
 TH1D* hntrk_Mixing_2 = new TH1D("hntrk_Mixing_2", "", 2400, 0, 2400);
 TH1D* hntrk_Mixing_3 = new TH1D("hntrk_Mixing_3", "", 2400, 0, 2400);
 TH1D* hntrk_Mixing_4 = new TH1D("hntrk_Mixing_4", "", 2400, 0, 2400);
+
+// to check multiplicity fluctuation
+int    bins4D_mult[2]   =   { 2400  , NCentbin         };
+double xmin4D_mult[2]   =   { 0.    , 0.               };
+double xmax4D_mult[2]   =   { 2400. , (double)NCentbin };
+
+THnSparseD * hnTrk_Signal_RapAsymm = new THnSparseD("hnTrk_Signal_RapAsymm", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
+THnSparseD * hnTrk_Signal_RapAsymm_1 = new THnSparseD("hnTrk_Signal_RapAsymm_1", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
+THnSparseD * hnTrk_Signal_RapAsymm_2 = new THnSparseD("hnTrk_Signal_RapAsymm_2", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
+THnSparseD * hnTrk_Signal_RapAsymm_3 = new THnSparseD("hnTrk_Signal_RapAsymm_3", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
+
+THnSparseD * hnTrk_Signal_Gen_RapAsymm = new THnSparseD("hnTrk_Signal_Gen_RapAsymm", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
+THnSparseD * hnTrk_Signal_Gen_RapAsymm_1 = new THnSparseD("hnTrk_Signal_Gen_RapAsymm_1", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
+THnSparseD * hnTrk_Signal_Gen_RapAsymm_2 = new THnSparseD("hnTrk_Signal_Gen_RapAsymm_2", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
+THnSparseD * hnTrk_Signal_Gen_RapAsymm_3 = new THnSparseD("hnTrk_Signal_Gen_RapAsymm_3", "", 2, bins4D_mult, xmin4D_mult, xmax4D_mult);
 
 // for gen sube0
 TH1D* hntrk_gen_sube0_Signal_0 = new TH1D("hntrk_gen_sube0_Signal_0", "", 2400, 0, 2400);
@@ -496,6 +525,17 @@ void sumw2()
   hTrk_sube1_Signal_GenpT_Eta_Phi_ctbin_pTCut_W->Sumw2();
   hTrk_sube1_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W->Sumw2();
 
+  // to check multiplciity fluctuation
+  hTrk_Signal_GenpT_Eta_ctbin_RapAsymm->Sumw2();
+  hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_1->Sumw2();
+  hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_2->Sumw2();
+  hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_3->Sumw2();
+
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm->Sumw2();
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_1->Sumw2();
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_2->Sumw2();
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_3->Sumw2();
+  
   // ntrks histograms
   hntrk_Signal_0->Sumw2();
   hntrk_Signal_1->Sumw2();
@@ -521,6 +561,16 @@ void sumw2()
   hntrk_Mixing_2->Sumw2();
   hntrk_Mixing_3->Sumw2();
   hntrk_Mixing_4->Sumw2();
+
+  hnTrk_Signal_RapAsymm->Sumw2();
+  hnTrk_Signal_RapAsymm_1->Sumw2();
+  hnTrk_Signal_RapAsymm_2->Sumw2();
+  hnTrk_Signal_RapAsymm_3->Sumw2();
+  
+  hnTrk_Signal_Gen_RapAsymm->Sumw2();
+  hnTrk_Signal_Gen_RapAsymm_1->Sumw2();
+  hnTrk_Signal_Gen_RapAsymm_2->Sumw2();
+  hnTrk_Signal_Gen_RapAsymm_3->Sumw2();
 
   // ntrks gen sube0 histograms
   hntrk_gen_sube0_Signal_0->Sumw2();
@@ -887,7 +937,6 @@ void Write_Trk_QA_hist(const bool& is_MC)
   //hTrk_Signal_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
   //hTrk_Mixing_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
 
-  
   if(is_MC)
     {
 
@@ -906,6 +955,12 @@ void Write_Trk_QA_hist(const bool& is_MC)
       hGnJetRcTrk_CorrpT_Eta_Phi_ctbin_pTCut_W->Write();
       hRcJetGnTrk_GenpT_Eta_Phi_ctbin_pTCut_W->Write();
 
+      // to check multiplciity fluctuation
+      hTrk_Signal_GenpT_Eta_ctbin_RapAsymm->Write();
+      hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_1->Write();
+      hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_2->Write();
+      hTrk_Signal_GenpT_Eta_ctbin_RapAsymm_3->Write();
+      
       /*
       // ntrks gen sube0 histograms
       hntrk_gen_sube0_Signal_0->Write();
@@ -921,8 +976,20 @@ void Write_Trk_QA_hist(const bool& is_MC)
       hntrk_gen_sube1_Signal_3->Write();
       hntrk_gen_sube1_Signal_4->Write();
       */
+
+      
+      hnTrk_Signal_Gen_RapAsymm->Write();
+      hnTrk_Signal_Gen_RapAsymm_1->Write();
+      hnTrk_Signal_Gen_RapAsymm_2->Write();
+      hnTrk_Signal_Gen_RapAsymm_3->Write();
     }
 
+  
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm->Write();
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_1->Write();
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_2->Write();
+  hTrk_Signal_CorrpT_Eta_ctbin_RapAsymm_3->Write();
+  
   /*
   // ntrks histograms
   hntrk_Signal_0->Write();
@@ -955,6 +1022,11 @@ void Write_Trk_QA_hist(const bool& is_MC)
   hvtxz_Signal_3->Write();
   hvtxz_Signal_4->Write();
   */
+
+  hnTrk_Signal_RapAsymm->Write();
+  hnTrk_Signal_RapAsymm_1->Write();
+  hnTrk_Signal_RapAsymm_2->Write();
+  hnTrk_Signal_RapAsymm_3->Write();
 }
 
 void Write_Jet_Trk_Corr_hist(const bool& is_MC, const bool& isRcJetGnTrk)

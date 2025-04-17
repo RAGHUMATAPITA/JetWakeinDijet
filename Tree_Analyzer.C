@@ -30,7 +30,10 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   TFile* fptFile_PbPb[NCentbin];
   TF1* fptWeight_PbPb[NCentbin];
   TF1* fptWeight;
-
+  
+  // trk efficiecny extra weight (any residual between gen and reco)
+  TF1* ftrkptResidual;
+  
   // for JER correction from JER fit, eta dependent SF
   TFile* fJERFile_pp;
   TFile* fJERFile_PbPb[NCentbin];
@@ -60,6 +63,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
       colliding_system_filename = "pp";
       use_cent = false;
       doEventFilter = false;
+      isFlip = false;
       
       if(is_MC)
 	{
@@ -154,8 +158,8 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
     {
       isMBEventsMixing = false; // true/ false
       colliding_system_filename = "PbPb";
-      
       use_cent = true;
+      isFlip = false;
       
       if(is_MC) 
 	{
@@ -248,6 +252,9 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
       htrk_eff_PbPb = (TH3F*)ftrk_eff->Get("Eff3D");
       htrk_fak_PbPb = (TH3F*)ftrk_fak->Get("Fak3D");
 
+      // residual trk weight
+      ftrkptResidual = new TF1("ftrkptResidual", "[0]+[1]*x+[2]*x*x+[3]*x*x*x", trk_pt_min_cut, trk_pt_max_cut);
+      
       event_filter_str.resize(0);
       event_filter_str.push_back("pprimaryVertexFilter");
       event_filter_str.push_back("HBHENoiseFilterResultRun2Loose");
@@ -665,7 +672,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   int evtcount_Gen = 0; // required for mixing
 
   for(int i = 0; i < nevents; i++) //event loop //start
-  //for(int i = 0; i < 1000; i++) //event loop start
+  //for(int i = 0; i < 30000; i++) //event loop start
     {
       hlt_tree->GetEntry(i);
       
@@ -735,6 +742,17 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 	  else{std::cout<<"Centrality bins are more than 4"<<std::endl; break;}
 	}
 
+      // residual trk weight
+      if(colliding_system == "PbPb")
+	{
+	  if(ctbin == 0){ftrkptResidual->SetParameter(0, 0.970585); ftrkptResidual->SetParameter(1, 0.0749357); ftrkptResidual->SetParameter(2, -0.0326848); ftrkptResidual->SetParameter(3, 0.00370829);}
+	  else if(ctbin == 1){ftrkptResidual->SetParameter(0, 0.94854); ftrkptResidual->SetParameter(1, 0.11568); ftrkptResidual->SetParameter(2, -0.0503877); ftrkptResidual->SetParameter(3, 0.00607712);}
+	  else if(ctbin == 2){ftrkptResidual->SetParameter(0, 0.936214); ftrkptResidual->SetParameter(1, 0.136788); ftrkptResidual->SetParameter(2, -0.059567); ftrkptResidual->SetParameter(3, 0.00735896);}
+	  else if(ctbin == 3){ftrkptResidual->SetParameter(0, 0.981607); ftrkptResidual->SetParameter(1, 0.0675844); ftrkptResidual->SetParameter(2, -0.0306086); ftrkptResidual->SetParameter(3, 0.00369337);}
+	  else if(ctbin == 4){ftrkptResidual->SetParameter(0, 1.04244); ftrkptResidual->SetParameter(1, -0.0265471); ftrkptResidual->SetParameter(2, 0.00775312); ftrkptResidual->SetParameter(3, -0.00092376);}
+	  else{std::cout<<"Centrality bins are more than 4"<<std::endl; break;}
+	}
+      
       double ptHatw = 1.;
       double pTHat = 0.;
       if(is_MC)
@@ -1284,7 +1302,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 			  TVector3 Reco_Filtered_ldJet_CorrpT, Reco_Filtered_sldJet_CorrpT;
 			  Reco_Filtered_ldJet_CorrpT.SetPtEtaPhi(ld_jet_pt, ld_jet_eta, ld_jet_phi);
 			  Reco_Filtered_sldJet_CorrpT.SetPtEtaPhi(sld_jet_pt, sld_jet_eta, sld_jet_phi);
-			  
+
 			  // Filled leading subleading reco/data corrected jet THnSparse
 			  double Jet_ldCorrpT_Eta_Phi_ctbin_flavour[5] = {ld_jet_pt, ld_jet_eta, ld_jet_phi, (double)ctbin, (double)ld_jet_refparonBB};
 			  hJet_ldCorrpT_Eta_Phi_ctbin_flavour_pTCut_W->Fill(Jet_ldCorrpT_Eta_Phi_ctbin_flavour, (Evtw)*(Reco_ldjetpT_W));
@@ -1350,15 +1368,15 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 			      
 			      if(!trk_hp) continue;
 			      if(trk_chg == 0) continue;
-			      if(fabs(trk_pterr/trk_pt) >= trk_pt_resolution_cut) continue;
-			      if(fabs(trk_dxy/trk_dxyerr) >= trk_dca_xy_cut) continue;
-			      if(fabs(trk_dz/trk_dzerr) >= trk_dca_z_cut) continue;
+			      if(fabs(trk_pterr/trk_pt) > trk_pt_resolution_cut) continue;
+			      if(fabs(trk_dxy/trk_dxyerr) > trk_dca_xy_cut) continue;
+			      if(fabs(trk_dz/trk_dzerr) > trk_dca_z_cut) continue;
 			      if(colliding_system == "PbPb")
 				{
 				  if(trk_nhits < nhits) continue;
 				  if(trk_algo == 6 && trk_mva < 0.98) continue;
-				  if(trk_chi2/((float)trk_ndf)/((float)trk_nlayers) >= chi2_ndf_nlayer_cut) continue;
-				  if(trk_pt > 20 && fabs(ETCalo/trk_pt) <= calo_matching) continue;
+				  if(trk_chi2/trk_ndf/trk_nlayers >= chi2_ndf_nlayer_cut) continue;
+				  if(trk_pt > 20 && fabs(ETCalo/trk_pt) < calo_matching) continue;
 				}
 			      if(trk_pt <= trk_pt_min_cut || trk_pt >= trk_pt_max_cut) continue;
 			      //if(trk_pt < trk_pt_min_cut) continue;
@@ -1368,11 +1386,14 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 			      double trkfak = 1.;
 			      double trksec = 1.;
 			      double trk_wt = 1.;
+			      double residual_trk_wt = 1.;
 			      
 			      if(colliding_system == "PbPb")
 				{
 				  if(is_MC)
 				    {
+				      //trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin+20));
+				      //trkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta, trk_pt, centbin+20));
 				      trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin+10));
 				      trkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta, trk_pt, centbin+10));
 				      //trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin));
@@ -1383,6 +1404,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				      trkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta, trk_pt, centbin));
 				      trkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta, trk_pt, centbin));
 				    }
+				  residual_trk_wt = (1./ftrkptResidual->Eval(trk_pt));
 				}
 			      else if(colliding_system == "pp")
 				{
@@ -1395,7 +1417,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				{
 				  if(colliding_system == "PbPb")
 				    {
-				      trk_wt = (1. - trkfak)/trkeff;
+				      trk_wt = ((1. - trkfak)/trkeff)*(residual_trk_wt);
 				    }
 				  else if(colliding_system == "pp")
 				    {
@@ -1784,15 +1806,15 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				      
 				      if(!genrecotrk_hp) continue;
 				      if(genrecotrk_chg == 0) continue;
-				      if(fabs(genrecotrk_pterr/genrecotrk_pt) >= trk_pt_resolution_cut) continue;
-				      if(fabs(genrecotrk_dxy/genrecotrk_dxyerr) >= trk_dca_xy_cut) continue;
-				      if(fabs(genrecotrk_dz/genrecotrk_dzerr) >= trk_dca_z_cut) continue;
+				      if(fabs(genrecotrk_pterr/genrecotrk_pt) > trk_pt_resolution_cut) continue;
+				      if(fabs(genrecotrk_dxy/genrecotrk_dxyerr) > trk_dca_xy_cut) continue;
+				      if(fabs(genrecotrk_dz/genrecotrk_dzerr) > trk_dca_z_cut) continue;
 				      if(colliding_system == "PbPb")
 					{
 					  if(genrecotrk_nhits < nhits) continue;
 					  if(genrecotrk_algo == 6 && genrecotrk_mva < 0.98) continue;
-					  if(genrecotrk_chi2/((float)genrecotrk_ndf)/((float)genrecotrk_nlayers) >= chi2_ndf_nlayer_cut) continue;
-					  if(genrecotrk_pt > 20. && fabs(ETCalo/genrecotrk_pt) <= calo_matching) continue;
+					  if(genrecotrk_chi2/genrecotrk_ndf/genrecotrk_nlayers >= chi2_ndf_nlayer_cut) continue;
+					  if(genrecotrk_pt > 20. && fabs(ETCalo/genrecotrk_pt) < calo_matching) continue;
 					}
 				      if(genrecotrk_pt <= trk_pt_min_cut || genrecotrk_pt >= trk_pt_max_cut) continue;
 				      //if(genrecotrk_pt < trk_pt_min_cut) continue;
@@ -1805,11 +1827,14 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 				      double genrecotrkfak = 1.;
 				      double genrecotrksec = 1.;
 				      double genrecotrk_wt = 1.;
+				      double residual_genrecotrk_wt = 1.;
 				      
 				      if(colliding_system == "PbPb")
 					{
 					  if(is_MC)
 					    {
+					      //genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+20));
+					      //genrecotrkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+20));
 					      genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+10));
 					      genrecotrkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin+10));
 					      //genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin));
@@ -1820,6 +1845,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 					      genrecotrkeff = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin));
 					      genrecotrkfak = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(genrecotrk_eta, genrecotrk_pt, centbin));
 					    }
+					  residual_genrecotrk_wt = (1./ftrkptResidual->Eval(genrecotrk_pt));
 					}
 				      else if(colliding_system == "pp")
 					{
@@ -1832,7 +1858,8 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 					{
 					  if(colliding_system == "PbPb")
 					    {
-					      genrecotrk_wt = (1. - genrecotrkfak)/genrecotrkeff;
+					      //genrecotrk_wt = (1. - genrecotrkfak)/genrecotrkeff;
+					      genrecotrk_wt = ((1. - genrecotrkfak)/genrecotrkeff)*(residual_genrecotrk_wt);
 					    }
 					  else if(colliding_system == "pp")
 					    {
@@ -1896,7 +1923,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   std::vector<Long64_t> Evtno_vec_MB_1D;                   // event number
   std::vector<int> HiBin_vec_MB_1D;                        // centrality
   std::vector<int> HiBinValue_vec_MB_1D;                   // centrality
-  std::vector<int> EvtCount_vec_MB_1D;                        // centrality
+  std::vector<int> EvtCount_vec_MB_1D;                     // centrality
   
   //2D tracks vectors (Event wise and track wise) 
   //gen vector
@@ -2048,21 +2075,24 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 	      if(trk_pt_MB <= trk_pt_min_cut || trk_pt_MB >= trk_pt_max_cut) continue;
 	      if(fabs(trk_eta_MB) >= trk_eta_cut) continue;
 
-	      double trkeff_MB = 1., trkfak_MB = 1.;
+	      double trkeff_MB = 1., trkfak_MB = 1.; 
 	      if(is_MC)
 		{
-		  //trkeff_MB = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB+10));
-		  //trkfak_MB = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB+10));
-		  trkeff_MB = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB));
-                  trkfak_MB = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB));
+		  trkeff_MB = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB+10));
+		  trkfak_MB = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB+10));
+		  //trkeff_MB = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB));
+                  //trkfak_MB = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB));
 		}
 	      else
 		{
 		  trkeff_MB = htrk_eff_PbPb->GetBinContent(htrk_eff_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB));
                   trkfak_MB = htrk_fak_PbPb->GetBinContent(htrk_fak_PbPb->FindBin(trk_eta_MB, trk_pt_MB, centbin_MB));
 		}
-	      double trk_wt_MB = 1.;
-	      if(trkeff_MB > 0.001){trk_wt_MB = (1. - trkfak_MB)/trkeff_MB;}
+	      double trk_wt_MB = 1.; double residual_trk_wt_MB = 1.;
+	      residual_trk_wt_MB = (1./ftrkptResidual->Eval(trk_pt_MB));
+	      
+	      //if(trkeff_MB > 0.001){trk_wt_MB = (1. - trkfak_MB)/trkeff_MB;}
+	      if(trkeff_MB > 0.001){trk_wt_MB = ((1. - trkfak_MB)/trkeff_MB)*(residual_trk_wt_MB);}
 	      if((trk_pt_MB < 0 || trk_pt_MB > 500) || (fabs(trk_eta_MB) > 2.4)) trk_wt_MB = 0.; // check bound
 
 	      TVector3 Reco_Filtered_InclTrk_pT_MB;
@@ -2132,7 +2162,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 
       // signal
       // for reco/data
-      Jet_Track_signal_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
+      Jet_Track_signal_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, true, false, false, isFlip); // true for reco, false for sube, false for rcjet gen trk sube
 
       // mixing
       // for reco/data
@@ -2142,22 +2172,22 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 	    {
 	      std::cout<<"Mixed event is done with dijet data"<<std::endl;
 	      std::cout<<endl;
-	      Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
+	      Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, true, false, false, isFlip); // true for reco, false for sube, false for rcjet gen trk sube
 	    }
 	  else if(isMBEventsMixing)
 	    {
 	      std::cout<<"Mixed event is done with MB sample"<<std::endl;
 	      std::cout<<endl;
-	      Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Reco_Filtered_InclTrk_pT_vec_MB_2D, Reco_Filtered_InclTrkW_vec_MB_2D, Reco_Filtered_InclTrkSube_vec_MB_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
+	      Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Reco_Filtered_InclTrk_pT_vec_MB_2D, Reco_Filtered_InclTrkW_vec_MB_2D, Reco_Filtered_InclTrkSube_vec_MB_2D, true, false, false, isFlip); // true for reco, false for sube, false for rcjet gen trk sube
 	    }
 	}
       else if(colliding_system == "pp")
 	{
 	  std::cout<<"Mixed event is done with diejt data"<<std::endl;
 	  std::cout<<endl;
-	  Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
+	  Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, Reco_Filtered_InclTrk_pT_vec_2D, Reco_Filtered_InclTrkW_vec_2D, Reco_Filtered_InclTrkCharge_vec_2D, Reco_Filtered_InclTrkSube_vec_2D, true, false, false, isFlip); // true for reco, false for sube, false for rcjet gen trk sube
 	}
-            
+
       // for gen
       if(is_MC)
 	{
@@ -2165,11 +2195,11 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 	  if(colliding_system == "PbPb" && !isMBEventsMixing) // for sube 0
 	    //if(colliding_system == "PbPb") // for sube 0
 	    {
-	      Jet_Track_signal_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, true, false); // false for gen, true for sube, false for rcjet gen trk sube
+	      Jet_Track_signal_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, true, false, isFlip); // false for gen, true for sube, false for rcjet gen trk sube
 	    }
 	  else 
 	    {
-	      Jet_Track_signal_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, false, false); // false for gen, false for sube, false for rcjet gen trk sube
+	      Jet_Track_signal_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, false, false, isFlip); // false for gen, false for sube, false for rcjet gen trk sube
 	    }
 
 	  // mixing
@@ -2179,20 +2209,20 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
 		{
 		  std::cout<<"Mixed event is done with diejt data"<<std::endl;
 		  std::cout<<endl;
-		  Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, true, false); // false for gen, true for sube, false for rcjet gen trk sube
+		  Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, true, false, isFlip); // false for gen, true for sube, false for rcjet gen trk sube
 		}
 	      else if(isMBEventsMixing)
 		{
 		  std::cout<<"Mixed event is done with MB sample"<<std::endl;
 		  std::cout<<endl;
-		  Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Gen_Filtered_InclTrk_pT_vec_MB_2D, Gen_Filtered_InclTrkW_vec_MB_2D, Gen_Filtered_InclTrkSube_vec_MB_2D, false, false, false); // false for gen, false for sube, false for rcjet gen trk sube
+		  Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Gen_Filtered_InclTrk_pT_vec_MB_2D, Gen_Filtered_InclTrkW_vec_MB_2D, Gen_Filtered_InclTrkSube_vec_MB_2D, false, false, false, isFlip); // false for gen, false for sube, false for rcjet gen trk sube
 		}
 	    }
 	  else if(colliding_system == "pp")
 	    {
 	      std::cout<<"Mixed event is done with diejt data"<<std::endl;
 	      std::cout<<endl;
-	      Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, false, false); // false for gen, false for sube
+	      Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, Gen_Filtered_InclTrk_pT_vec_2D, Gen_Filtered_InclTrkW_vec_2D, Gen_Filtered_InclTrkCharge_vec_2D, Gen_Filtered_InclTrkSube_vec_2D, false, false, false, isFlip); // false for gen, false for sube
 	    }
 	} // is MC
     }
@@ -2201,7 +2231,7 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
       std::cout<<"Correlation will be done between reco jets and gen tracks and vice varsa"<<std::endl;
       // signal
       // for reco/data
-      Jet_Track_signal_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, true); // true for reco, false for sube, true for rcjet gen trk sube
+      Jet_Track_signal_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, true, isFlip); // true for reco, false for sube, true for rcjet gen trk sube
 
       // mixing
       // for reco/data
@@ -2211,27 +2241,27 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
             {
 	      std::cout<<"Mixed event is done dijet data"<<std::endl;
 	      std::cout<<endl;
-	      Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, true); // true for reco, false for sube, true for rcjet gen trk sube
+	      Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, true, isFlip); // true for reco, false for sube, true for rcjet gen trk sube
 	    }
 	  else if(isMBEventsMixing)
 	    {
 	      std::cout<<"Mixed event is done with MB sample"<<std::endl;
 	      std::cout<<endl;
-	      Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Gen_Filtered_InclTrk_pT_vec_MB_2D, Gen_Filtered_InclTrkW_vec_MB_2D, Gen_Filtered_InclTrkSube_vec_MB_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
+	      Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Gen_Filtered_InclTrk_pT_vec_MB_2D, Gen_Filtered_InclTrkW_vec_MB_2D, Gen_Filtered_InclTrkSube_vec_MB_2D, true, false, false, isFlip); // true for reco, false for sube, false for rcjet gen trk sube
 	    }
 	}
       else if(colliding_system == "pp")
 	{
 	  std::cout<<"Mixed event is done dijet data"<<std::endl;
 	  std::cout<<endl;
-	  Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, false); // true for reco, false for sube, false for rcjet gen trk sube
+	  Jet_Track_mixing_corr_ldsld(colliding_system, Reco_Evtw_vec_1D, HiBin_vec_1D, HiBinValue_vec_1D, Vertexz_vec_1D, Reco_Evtno_vec_1D, Reco_EvtCount_vec_1D, Reco_Filtered_ldJet_CorrpT_vec_1D, Reco_Filtered_ldrefpartonB_vec_1D, Reco_Filtered_ldJetW_vec_1D, Reco_Filtered_sldJet_CorrpT_vec_1D, Reco_Filtered_sldrefpartonB_vec_1D, Reco_Filtered_sldJetW_vec_1D, RecoGen_Filtered_InclTrk_pT_vec_2D, RecoGen_Filtered_InclTrkW_vec_2D, RecoGen_Filtered_InclTrkCharge_vec_2D, RecoGen_Filtered_InclTrkSube_vec_2D, true, false, false, isFlip); // true for reco, false for sube, false for rcjet gen trk sube
 	}
 
       // for gen
       if(is_MC)
 	{
 	  // signal
-	  Jet_Track_signal_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, false, false, false); // false for reco, false for sube, false for rcjet gen trk sube
+	  Jet_Track_signal_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, false, false, false, isFlip); // false for reco, false for sube, false for rcjet gen trk sube
 
 	  // mixing
 	  if(colliding_system == "PbPb")
@@ -2240,20 +2270,20 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
                 {
                   std::cout<<"Mixed event is done with diejt data"<<std::endl;
                   std::cout<<endl;
-		  Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, false, false, false); // false for gen, false for sube, false for rcjet gen trk sube
+		  Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, false, false, false, isFlip); // false for gen, false for sube, false for rcjet gen trk sube
 		}
 	      else if(isMBEventsMixing)
 		{
 		  std::cout<<"Mixed event is done with MB sample"<<std::endl;
 		  std::cout<<endl;
-		  Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Reco_Filtered_InclTrk_pT_vec_MB_2D, Reco_Filtered_InclTrkW_vec_MB_2D, Reco_Filtered_InclTrkSube_vec_MB_2D, false, false, false); // false for gen, false for sube, false for rcjet gen trk sube
+		  Jet_Track_mixing_withMB_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, HiBin_vec_MB_1D, HiBinValue_vec_MB_1D, Vertexz_vec_MB_1D, Evtno_vec_MB_1D, EvtCount_vec_MB_1D, Reco_Filtered_InclTrk_pT_vec_MB_2D, Reco_Filtered_InclTrkW_vec_MB_2D, Reco_Filtered_InclTrkSube_vec_MB_2D, false, false, false, isFlip); // false for gen, false for sube, false for rcjet gen trk sube
 		}
 	    }
 	  else if(colliding_system == "pp")
 	    {
 	      std::cout<<"Mixed event is done with diejt data"<<std::endl;
 	      std::cout<<endl;
-	      Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, false, false, false); // false for gen, false for sube, false for rcjet gen trk sube
+	      Jet_Track_mixing_corr_ldsld(colliding_system, Gen_Evtw_vec_1D, Gen_HiBin_vec_1D, Gen_HiBinValue_vec_1D, Gen_Vertexz_vec_1D, Gen_Evtno_vec_1D, Gen_EvtCount_vec_1D, Gen_Filtered_ldJet_CorrpT_vec_1D, Gen_Filtered_ldrefpartonB_vec_1D, Gen_Filtered_ldJetW_vec_1D, Gen_Filtered_sldJet_CorrpT_vec_1D, Gen_Filtered_sldrefpartonB_vec_1D, Gen_Filtered_sldJetW_vec_1D, GenReco_Filtered_InclTrk_pT_vec_2D, GenReco_Filtered_InclTrkW_vec_2D, GenReco_Filtered_InclTrkCharge_vec_2D, GenReco_Filtered_InclTrkSube_vec_2D, false, false, false, isFlip); // false for gen, false for sube, false for rcjet gen trk sube
 	    }
 	} // is_MC
     } // isRcJetGnTrk
@@ -2422,7 +2452,13 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
       ftrk_fak->Close();
       delete ftrk_fak;
     }
-
+  
+  if(colliding_system == "PbPb")
+    {
+      // delete this one because created here. Not get it froma root file
+      delete ftrkptResidual;
+      ftrkptResidual = nullptr;
+    }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~define output file
   std::string outfilename = Form("%s/%s_Outfile_pTHat%1.1f_JetpT%1.1f_LdpT%1.1f_SldpT%1.1f_JetEta%1.1f_%d",out_file.Data(), colliding_system_filename.Data(), pthat_cut, jet_pt_min_cut, leading_pT_min_cut, subleading_pT_min_cut, jet_eta_max_cut, itxtoutFile);
   
@@ -2446,11 +2482,11 @@ void Tree_Analyzer(TString input_file, int itxtoutFile, TString out_file, TStrin
   fout->mkdir("Trk_QA_Hist");
   fout->cd("Trk_QA_Hist");
   Write_Trk_QA_hist(is_MC);
-  
+
   fout->mkdir("Jet_Trk_Corr_Hist");
   fout->cd("Jet_Trk_Corr_Hist");
   Write_Jet_Trk_Corr_hist(is_MC, isRcJetGnTrk);
-  
+
   fout->Write();
   fout->Close();
   delete fout;
